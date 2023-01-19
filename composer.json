@@ -1,0 +1,43 @@
+{
+	"name": "forrest79/phpcs-ignores",
+	"description": "PhPgSql class reflection extension and settings for PHPStan.",
+	"keywords": ["phpcs", "ignore"],
+	"type": "phpstan-extension",
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Jakub Trmota",
+			"email": "jakub@trmota.cz"
+		}
+	],
+	"require": {
+		"nette/neon": "^3.3",
+		"php": ">=8.1",
+		"squizlabs/php_codesniffer": "3.*"
+ 	},
+	"require-dev": {
+		"forrest79/phpcs": "^0.3",
+		"phpstan/phpstan": "^1.9",
+		"phpstan/phpstan-strict-rules": "^1.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"Forrest79\\PhpCsIgnores\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Forrest79\\PhpCsIgnores\\Tests\\": "tests/"
+		}
+	},
+	"scripts": {
+		"phpcs": "vendor/bin/phpcs -s src tests",
+		"phpstan": "vendor/bin/phpstan analyse src tests",
+		"tests": "vendor/bin/phpcs --standard=tests/phpcs.xml --parallel=2 --bootstrap=src/bootstrap.php -s tests"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": false
+		}
+	}
+}

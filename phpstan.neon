@@ -1,0 +1,6 @@
+includes:
+	- %rootDir%/conf/bleedingEdge.neon
+	- %rootDir%/../phpstan-strict-rules/rules.neon
+
+parameters:
+	level: max

@@ -33,7 +33,11 @@
 	"scripts": {
 		"phpcs": "vendor/bin/phpcs -s src tests",
 		"phpstan": "vendor/bin/phpstan analyse src tests",
-		"tests": "vendor/bin/phpcs --standard=tests/phpcs.xml --parallel=2 --bootstrap=src/bootstrap.php -s tests"
+		"tests": "vendor/bin/phpcs --standard=tests/phpcs.xml --parallel=2 --bootstrap=src/bootstrap.php --cache=cache.json -sp tests",
+		"tests2": "vendor/bin/phpcs --standard=tests/phpcs.xml --parallel=2 --bootstrap=src/bootstrap.php -s tests",
+		"tests3": "vendor/bin/phpcbf --standard=tests/phpcs.xml --parallel=2 --bootstrap=src/bootstrap.php -s tests",
+		"tests4": "vendor/bin/phpcs --standard=tests/phpcs.xml --bootstrap=src/bootstrap.php -sp tests",
+		"tests-bootstrap": "vendor/bin/phpcs --standard=tests/phpcs.xml --bootstrap=src/bootstrap.php --report=\\\\Forrest79\\\\PhpCsIgnores\\\\BaselineReport -s tests"
 	},
 	"config": {
 		"allow-plugins": {

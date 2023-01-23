@@ -7,26 +7,18 @@ use PHP_CodeSniffer;
 
 final class Ignores
 {
-	private static self|NULL $instance = NULL;
-
 	/** @var list<string> */
 	private array $configFiles = [];
 
 	/** @var array<string, array<string, array<string, int>>> */
 	private array $ignoreErrors = [];
 
-	/** @var array<string, array<string, array<string, array<string, int>>>> */
-	private array $ignoreErrorsByHash = [];
 
-	private Outdated|NULL $outdated = NULL;
-
-
-	/**
-	 * @param array<string> $rulesetPaths
-	 */
-	public function __construct(array $rulesetPaths, Outdated|NULL $outdated = NULL)
+	public function __construct(PHP_CodeSniffer\Ruleset $ruleset)
 	{
-		foreach ($rulesetPaths as $path) {
+		$rulesetPaths = $ruleset->paths;
+
+		foreach (array_merge([getcwd() . '/.phpcs.xml', getcwd() . '/phpcs.xml'], $rulesetPaths) as $path) {
 			$filter = dirname($path) . '/' . basename($path, '.xml') . '*.neon';
 			$configFiles = glob($filter);
 			if ($configFiles === FALSE) {
@@ -66,51 +58,35 @@ final class Ignores
 				}
 			}
 		}
-
-		if ($outdated !== NULL) {
-			$outdated->setOriginalIgnoreErrors($this->ignoreErrors);
-			$this->outdated = $outdated;
-		}
 	}
 
 
-	/**
-	 * @see PhpCsInjections for usage
-	 * @param array<string, mixed> $data
-	 */
-	public function isIgnored(
-		PHP_CodeSniffer\Fixer $fixer,
-		string $path,
-		string $sniff,
-		string $message,
-		array $data,
-		string|NULL $sniffMessage,
-	): bool
+	public function isIgnored(string $path, string $sniff, string $message): bool
 	{
-		$message = $sniffMessage ?? $message;
-
-		if ($data !== []) {
-			$message = vsprintf($message, $data);
-		}
-
-		// Internally - PHPCS can check one error more than once, when fixing is active - we need to check this separately for every file check ( magic :-( )
-		$hash = ($fixer->enabled ? 'F-YES' : 'F-NO') . ':' . $fixer->loops;
-		$this->ignoreErrorsByHash[$hash] ??= $this->ignoreErrors;
-
-		if (isset($this->ignoreErrorsByHash[$hash][$path][$sniff][$message])) {
-			$this->ignoreErrorsByHash[$hash][$path][$sniff][$message]--;
-			if ($this->ignoreErrorsByHash[$hash][$path][$sniff][$message] === 0) {
-				unset($this->ignoreErrorsByHash[$hash][$path][$sniff][$message]);
+		if (isset($this->ignoreErrors[$path][$sniff][$message])) {
+			$this->ignoreErrors[$path][$sniff][$message]--;
+			if ($this->ignoreErrors[$path][$sniff][$message] === 0) {
+				unset($this->ignoreErrors[$path][$sniff][$message]);
 			}
 
-			if (!$fixer->enabled) {
-				$this->outdated?->addIgnoredError($path, $sniff, $message);
+			if ($this->ignoreErrors[$path][$sniff] === []) {
+				unset($this->ignoreErrors[$path][$sniff]);
+			}
+
+			if ($this->ignoreErrors[$path] === []) {
+				unset($this->ignoreErrors[$path]);
 			}
 
 			return TRUE;
 		}
 
 		return FALSE;
+	}
+
+
+	public function getRemainingIgnoreErrors(): array
+	{
+		return $this->ignoreErrors;
 	}
 
 
@@ -133,32 +109,6 @@ final class Ignores
 			}
 		}
 		return implode(DIRECTORY_SEPARATOR, $absolutes);
-	}
-
-
-	/**
-	 * @return list<string>
-	 */
-	public function getConfigFiles(): array
-	{
-		return $this->configFiles;
-	}
-
-
-	public static function getInstance(PHP_CodeSniffer\Config $config, PHP_CodeSniffer\Ruleset $ruleset): self
-	{
-		if (self::$instance === NULL) {
-			$outdated = NULL;
-
-			$settings = $config->getSettings();
-			if (($settings['cache'] === FALSE) && ($settings['parallel'] === 1)) {
-				$outdated = new Outdated(array_key_exists('checkstyle', $settings['reports'] ?? []));
-			}
-
-			self::$instance = new self($ruleset->paths, $outdated);
-		}
-
-		return self::$instance;
 	}
 
 }

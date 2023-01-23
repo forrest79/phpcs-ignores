@@ -1,35 +1,18 @@
 <?php declare(strict_types=1);
 
-Forrest79\PhpCsIgnores\PhpCsInjections::register();
-
 assert($this instanceof PHP_CodeSniffer\Runner);
 
-$settings = $this->config->getSettings();
+$ignores =  new Forrest79\PhpCsIgnores\Ignores($this->ruleset);
 
-$ignores = Forrest79\PhpCsIgnores\Ignores::getInstance($this->config, $this->ruleset);
+// can be defined via bootstrap-outdated.php
+$outdatedVirtualFile ??= NULL;
 
-if ($settings['cache'] === TRUE) { // Cache invalidation
-	$phpcsCacheFile = $settings['cacheFile'];
-	assert(is_string($phpcsCacheFile));
+$this->reporter = new Forrest79\PhpCsIgnores\Reporter($ignores, $this->config, $outdatedVirtualFile);
 
-	$ignoresHashFile = $phpcsCacheFile . '-phpcs-ignore-hash';
+$this->config->recordErrors = true; // needed for correct working in CBF (we need errors details to check if it is ignored in report)
 
-	$ignoresHash = @file_get_contents($ignoresHashFile); // intentionally @ - file may not exists
-	if ($ignoresHash === FALSE) {
-		$ignoresHash = '';
-	}
-
-	$actualHash = '';
-	foreach ($ignores->getConfigFiles() as $file) {
-		$actualHash .= md5_file($file);
-	}
-
-	if ($ignoresHash !== $actualHash) {
-		if (PHP_CODESNIFFER_VERBOSITY > 0) {
-			echo 'Invalidating PHPCS cache because ignore definition was changed.' . PHP_EOL;
-		}
-		@unlink($phpcsCacheFile); // intentionally @ - file may not exists
-
-		file_put_contents($ignoresHashFile, $actualHash);
-	}
+if ($outdatedVirtualFile !== NULL) {
+	$files = $this->config->files;
+	$files[] = $outdatedVirtualFile; // this must be last file to check - it's virtual file that perform check what ignored errors was not matched
+	$this->config->files = $files;
 }

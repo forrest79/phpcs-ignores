@@ -8,17 +8,31 @@ use PHP_CodeSniffer\Reports\Report;
 
 final class BaselineReport implements Report
 {
+	private string $cwd;
+
+	private int $cwdLength;
+
+
+	public function __construct()
+	{
+		$cwd = getcwd();
+		if ($cwd === FALSE) {
+			throw new \RuntimeException('Can\'t get current directory.');
+		}
+
+		$this->cwd = $cwd;
+		$this->cwdLength = strlen($cwd);
+	}
+
 
 	/**
-	 * @param File $phpcsFile
 	 * @param array<mixed> $report
 	 * @param bool $showSources
 	 * @param int $width
 	 */
 	public function generateFileReport($report, File $phpcsFile, $showSources = FALSE, $width = 80): bool
 	{
-		assert(is_int($report['errors']));
-		assert(is_int($report['warnings']));
+		assert(is_int($report['errors']) && is_int($report['warnings']));
 
 		if ($report['errors'] === 0 && $report['warnings'] === 0) {
 			return FALSE;
@@ -26,7 +40,14 @@ final class BaselineReport implements Report
 
 		assert(is_string($report['filename']));
 
-		$filename = str_replace('\\', '\\\\', $report['filename']);
+		$filename = $report['filename'];
+
+		// use relative path to current working directory
+		if (str_starts_with($filename, $this->cwd)) {
+			$filename = substr($filename, $this->cwdLength + 1);
+		}
+
+		$filename = str_replace('\\', '\\\\', $filename);
 		$filename = str_replace('"', '\"', $filename);
 		$filename = str_replace('/', '\/', $filename);
 
@@ -73,12 +94,16 @@ final class BaselineReport implements Report
 	): void
 	{
 		$json = '{"files":{' . rtrim($cachedData, ',') . '}}' . PHP_EOL;
-		$data = json_decode($json, TRUE, flags: JSON_THROW_ON_ERROR);
+		$data = json_decode($json, TRUE, 512, JSON_THROW_ON_ERROR);
+		assert(is_array($data));
 
 		$ignoreErrors = [];
-		if (($data['files'] ?? []) !== []) {
+		if (is_array($data['files'])) {
 			foreach ($data['files'] as $path => $errors) {
+				assert(is_array($errors));
 				foreach ($errors as $error) {
+					assert(is_array($error) && is_string($error['sniff']) && $error['message']);
+
 					$sniff = $error['sniff'];
 					$message = $error['message'];
 					$ignoreErrors[$path][$sniff][$message] = ($ignoreErrors[$path][$sniff][$message] ?? 0) + 1;

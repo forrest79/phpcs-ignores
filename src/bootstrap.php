@@ -1,18 +1,14 @@
 <?php declare(strict_types=1);
 
-assert($this instanceof PHP_CodeSniffer\Runner);
+Forrest79\PhpCsIgnores\PhpCsInjections::register();
 
-$ignores =  new Forrest79\PhpCsIgnores\Ignores($this->ruleset);
+assert(isset($this) && ($this instanceof PHP_CodeSniffer\Runner));
 
-// can be defined via bootstrap-outdated.php
-$outdatedVirtualFile ??= NULL;
+$ignores = (new Forrest79\PhpCsIgnores\Ignores($this->ruleset))->setInstance();
 
-$this->reporter = new Forrest79\PhpCsIgnores\Reporter($ignores, $this->config, $outdatedVirtualFile);
-
-$this->config->recordErrors = true; // needed for correct working in CBF (we need errors details to check if it is ignored in report)
-
-if ($outdatedVirtualFile !== NULL) {
-	$files = $this->config->files;
-	$files[] = $outdatedVirtualFile; // this must be last file to check - it's virtual file that perform check what ignored errors was not matched
-	$this->config->files = $files;
+// is defined via bootstrap-outdated.php
+if (isset($outdatedVirtualFile)) {
+	(new Forrest79\PhpCsIgnores\OutdatedFiles($ignores, $this->config, $outdatedVirtualFile))->setInstance();
 }
+
+$this->config->recordErrors = TRUE; // needed for correct working in CBF (we need errors details to check if it is ignored in report)

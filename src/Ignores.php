@@ -7,6 +7,8 @@ use PHP_CodeSniffer;
 
 final class Ignores
 {
+	private static self|NULL $instance = NULL;
+
 	/** @var list<string> */
 	private array $configFiles = [];
 
@@ -36,19 +38,18 @@ final class Ignores
 			}
 
 			$ignoreErrors = Neon::decode($configFileData);
-			if (isset($ignoreErrors['ignoreErrors']) && is_array($ignoreErrors['ignoreErrors'])) {
+			if (is_array($ignoreErrors) && isset($ignoreErrors['ignoreErrors']) && is_array($ignoreErrors['ignoreErrors'])) {
 				foreach ($ignoreErrors['ignoreErrors'] as $ignoreError) {
+					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']));
+
 					$path = $ignoreError['path'];
-					assert(is_string($path));
 					if (!str_starts_with($path, '/')) {
 						$path = self::getAbsolutePath($configFileDir . '/' . $path);
 					}
 
 					$sniff = $ignoreError['sniff'];
-					assert(is_string($sniff));
 
 					$message = $ignoreError['message'];
-					assert(is_string($message));
 
 					$this->ignoreErrors[$path][$sniff][$message] = (int) $ignoreError['count'];
 
@@ -61,29 +62,20 @@ final class Ignores
 	}
 
 
-	public function isIgnored(string $path, string $sniff, string $message): bool
+	/**
+	 * @return array<string, array<string, int>>
+	 */
+	public function getRemainingIgnoreErrorsForFileAndClean(string $path): array
 	{
-		if (isset($this->ignoreErrors[$path][$sniff][$message])) {
-			$this->ignoreErrors[$path][$sniff][$message]--;
-			if ($this->ignoreErrors[$path][$sniff][$message] === 0) {
-				unset($this->ignoreErrors[$path][$sniff][$message]);
-			}
-
-			if ($this->ignoreErrors[$path][$sniff] === []) {
-				unset($this->ignoreErrors[$path][$sniff]);
-			}
-
-			if ($this->ignoreErrors[$path] === []) {
-				unset($this->ignoreErrors[$path]);
-			}
-
-			return TRUE;
-		}
-
-		return FALSE;
+		$remainingErrors = $this->ignoreErrors[$path] ?? [];
+		unset($this->ignoreErrors[$path]);
+		return $remainingErrors;
 	}
 
 
+	/**
+	 * @return array<string, array<string, array<string, int>>>
+	 */
 	public function getRemainingIgnoreErrors(): array
 	{
 		return $this->ignoreErrors;
@@ -109,6 +101,28 @@ final class Ignores
 			}
 		}
 		return implode(DIRECTORY_SEPARATOR, $absolutes);
+	}
+
+
+	public function setInstance(): static
+	{
+		if (self::$instance !== NULL) {
+			throw new \RuntimeException('Instance can be set just once.');
+		}
+
+		self::$instance = $this;
+
+		return $this;
+	}
+
+
+	public static function getInstance(): self
+	{
+		if (self::$instance === NULL) {
+			throw new \RuntimeException('Instance is not set.');
+		}
+
+		return self::$instance;
 	}
 
 }

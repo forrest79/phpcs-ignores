@@ -3,6 +3,6 @@
 	<rule ref="./../vendor/forrest79/phpcs/Forrest79CodingStandard/ruleset.xml"/>
 
 	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName.NoMatchBetweenTypeNameAndFileName">
-		<exclude-pattern>TestFile1.php</exclude-pattern>
+		<exclude-pattern>File1.php</exclude-pattern>
 	</rule>
 </ruleset>

@@ -11,35 +11,42 @@
 		</properties>
 	</rule>
 
-	<!-- PHP 8.0 -->
-	<rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall.MissingTrailingComma">
-		<exclude-pattern>src/PHPStan/Reflection/FetchDynamicMethodReturnTypeExtension.php</exclude-pattern>
+	<rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+		<exclude-pattern>tests/run-tests.php</exclude-pattern>
 	</rule>
 
-	<!-- PHP 8.0 -->
-	<rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration.MissingTrailingComma">
-		<exclude-pattern>src/PHPStan/Analyser/IsDbRowFunctionTypeSpecifyingExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/Reflection/FetchDynamicMethodReturnTypeExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/Reflection/FluentComplexDynamicMethodReturnTypeExtension.php</exclude-pattern>
+	<rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+		<exclude-pattern>src/PhpCsInjections.php</exclude-pattern>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName.NoMatchBetweenTypeNameAndFileName">
+		<exclude-pattern>tests/run-tests.php</exclude-pattern>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Functions.DisallowArrowFunction.DisallowedArrowFunction">
+		<exclude-pattern>tests/run-tests.php</exclude-pattern>
 	</rule>
 
 	<rule ref="SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter">
-		<exclude-pattern>src/PHPStan/Analyser/IsDbRowFunctionTypeSpecifyingExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/PhpDoc/DbRowTypeNodeResolverExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/Reflection/FetchDynamicMethodReturnTypeExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/Reflection/FluentComplexDynamicMethodReturnTypeExtension.php</exclude-pattern>
+		<exclude-pattern>src/BaselineReport.php</exclude-pattern>
+		<exclude-pattern>src/PhpCsInjections.php</exclude-pattern>
 	</rule>
 
-	<!-- PHP 8.0 -->
 	<rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint">
-		<exclude-pattern>src/functions.php</exclude-pattern>
+		<exclude-pattern>src/BaselineReport.php</exclude-pattern>
+		<exclude-pattern>src/File.php</exclude-pattern>
+		<exclude-pattern>src/PhpCsInjections.php</exclude-pattern>
 	</rule>
 
-	<!-- PHP 8.0 -->
-	<rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint">
-		<exclude-pattern>src/PHPStan/Analyser/IsDbRowFunctionTypeSpecifyingExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/PhpDoc/DbRowTypeNodeResolverExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/Reflection/FetchDynamicMethodReturnTypeExtension.php</exclude-pattern>
-		<exclude-pattern>src/PHPStan/Reflection/FluentComplexDynamicMethodReturnTypeExtension.php</exclude-pattern>
+	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint">
+		<exclude-pattern>src/PhpCsInjections.php</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Classes.ClassFileName.NoMatch">
+		<exclude-pattern>tests/run-tests.php</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.PHP.Heredoc.NotAllowed">
+		<exclude-pattern>tests/run-tests.php</exclude-pattern>
 	</rule>
 </ruleset>

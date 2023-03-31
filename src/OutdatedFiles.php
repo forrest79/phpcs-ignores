@@ -12,9 +12,11 @@ final class OutdatedFiles
 
 	private Ignores $ignores;
 
-	private PHP_CodeSniffer\Config $config;
-
 	private string $outdatedVirtualFile;
+
+	private int $originalParallelCount;
+
+	private int|NULL $realParallelCount = NULL;
 
 	private string|NULL $outdatedDataFile = NULL;
 
@@ -22,14 +24,14 @@ final class OutdatedFiles
 	public function __construct(Ignores $ignores, PHP_CodeSniffer\Config $config, string $outdatedVirtualFile)
 	{
 		$this->ignores = $ignores;
-		$this->config = $config;
 		$this->outdatedVirtualFile = $outdatedVirtualFile;
+		$this->originalParallelCount = (int) $config->parallel; // PHPStan fix bad annotation hack
 
 		$files = $config->files;
 		$files[] = $outdatedVirtualFile; // this must be last file to check - it's file that perform check what ignored files was not matched
 		$config->files = $files;
 
-		if ($config->parallel === 1) {
+		if ($this->originalParallelCount === 1) {
 			$this->outdatedDataFile = NULL;
 		} else {
 			$outdatedDataFile = tempnam(sys_get_temp_dir(), 'phpcs-ignores-outdated');
@@ -37,7 +39,7 @@ final class OutdatedFiles
 				throw new \RuntimeException('Can\'t create phpcs-ignores-outdated temp file.');
 			}
 
-			file_put_contents($outdatedDataFile, json_encode(['processCount' => $config->parallel, 'completedCount' => 0, 'remainingIgnoreErrors' => []]));
+			file_put_contents($outdatedDataFile, json_encode(['completedCount' => 0, 'remainingIgnoreErrors' => []]));
 			$this->outdatedDataFile = $outdatedDataFile;
 		}
 	}
@@ -65,9 +67,9 @@ final class OutdatedFiles
 			$json = $this->loadOutdatedDataFile();
 			$json['completedCount']++;
 
-			// we know that one file is only in one process, so valid remaining ignore errors are these it's in all processes
+			// we know that one checked file is only in one process, so valid remaining ignore errors are these it's in all processes (array_intersect_key)
 			$json['remainingIgnoreErrors'] = $json['completedCount'] === 1
-				? $this->ignores->getRemainingIgnoreErrors()
+				? $this->ignores->getRemainingIgnoreErrors() // for first process we need to fill array, so in next proceses we can make intersect (array_intersect_key)
 				: array_intersect_key($json['remainingIgnoreErrors'], $this->ignores->getRemainingIgnoreErrors());
 
 			file_put_contents($this->outdatedDataFile, json_encode($json));
@@ -92,13 +94,14 @@ final class OutdatedFiles
 		$outdatedFiles = [];
 
 		$remainingOutdatedErrors = $this->ignores->getRemainingIgnoreErrors();
-		if ($this->config->parallel > 1) {
+
+		if ($this->outdatedDataFile !== NULL) {
 			// wait to complete all processes
 			$start = microtime(TRUE);
 			do {
 				try {
 					$json = $this->loadOutdatedDataFile();
-					if ($json['processCount'] === ($json['completedCount'] + 1)) {
+					if (($this->realParallelCount ?? $this->originalParallelCount) === ($json['completedCount'] + 1)) {
 						$remainingOutdatedErrors = array_intersect_key($json['remainingIgnoreErrors'], $remainingOutdatedErrors);
 						break;
 					}
@@ -159,7 +162,7 @@ final class OutdatedFiles
 
 
 	/**
-	 * @return array{processCount: int, completedCount: int, remainingIgnoreErrors: array<array<string, mixed>>}
+	 * @return array{completedCount: int, remainingIgnoreErrors: array<array<string, mixed>>}
 	 */
 	private function loadOutdatedDataFile(): array
 	{
@@ -172,7 +175,7 @@ final class OutdatedFiles
 			throw new \RuntimeException('Can\'t load outdated data file.');
 		}
 
-		/** @phpstan-var array{processCount: int, completedCount: int, remainingIgnoreErrors: array<array<string, mixed>>} */
+		/** @phpstan-var array{completedCount: int, remainingIgnoreErrors: array<array<string, mixed>>} */
 		return json_decode($data, NULL, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
 	}
 
@@ -198,6 +201,20 @@ final class OutdatedFiles
 				$expectedCount,
 				$realCount === 1 ? '1 time' : ($realCount . ' times'),
 			);
+		}
+	}
+
+
+	public function setRealParallelCount(int $numFiles): void
+	{
+		if (($this->realParallelCount === NULL) && ($this->outdatedDataFile !== NULL)) {
+			$batch = ceil($numFiles / $this->originalParallelCount);
+			for ($i = 2; $i <= $this->originalParallelCount; $i++) {
+				if (($batch * $i) >= $numFiles) {
+					$this->realParallelCount = $i;
+					break;
+				}
+			}
 		}
 	}
 

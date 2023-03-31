@@ -37,7 +37,7 @@ final class PhpCsInjections
 					return $code;
 				}
 
-				$injectCode = 'new \\' . File::class . '(';
+				$injectCode = 'new \\' . File::class . '($this->numFiles, ';
 
 				return str_replace($search, $injectCode, $code);
 			}

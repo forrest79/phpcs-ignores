@@ -23,11 +23,6 @@ parameters:
 			path: src/File.php
 
 		-
-			message: "#^Strict comparison using \\=\\=\\= between bool and 1 will always evaluate to false\\.$#"
-			count: 1
-			path: src/OutdatedFiles.php
-
-		-
 			message: '#^Parameter \$phpcsFile of method Forrest79\\PhpCsIgnores\\BaselineReport\:\:generateFileReport\(\) has invalid type PHP_CodeSniffer\\File\.$#'
 			count: 1
 			path: src/BaselineReport.php

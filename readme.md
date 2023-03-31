@@ -28,17 +28,17 @@ Ignores list is in the [neon](https://doc.nette.org/en/neon/format) format and l
 
 ```yaml
 ignoreErrors:
-	-
-		sniff: SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
-		message: 'Method \Forrest79\PhpCsIgnores\Tests\File1::method1() does not have native type hint for its parameter $report but it should be possible to add it based on @param annotation "bool".'
-		count: 1
-		path: File1.php
+    -
+        sniff: SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+        message: 'Method \Forrest79\PhpCsIgnores\Tests\File1::method1() does not have native type hint for its parameter $report but it should be possible to add it based on @param annotation "bool".'
+        count: 1
+        path: File1.php
 
-	-
-		sniff: SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon
-		message: There must be no whitespace between closing parenthesis and return type colon.
-		count: 1
-		path: File2.php
+    -
+        sniff: SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon
+        message: There must be no whitespace between closing parenthesis and return type colon.
+        count: 1
+        path: File2.php
 ```
 
 The first line `ignoreErrors:` defines a structure/array. Item in the array is one error. You must provide concrete `sniff, `message`, `path` and `count`.
@@ -81,13 +81,13 @@ get many false positive messages.
 You can simply generate baseline `neon` file from existing errors. Just use our `BaselineReport`:
 
 ```bash
-vendor/bin/phpcs --report=\\\\Forrest79\\\\PhpCsIgnores\\\\BaselineReport -s src tests
+vendor/bin/phpcs --report=\\Forrest79\\PhpCsIgnores\\BaselineReport -s src tests
 ```
 
 Generated neon file is printed to the stdout, so probably you want to send this data right to some file:
 
 ```bash
-vendor/bin/phpcs --report=\\\\Forrest79\\\\PhpCsIgnores\\\\BaselineReport -s src tests > phpcs-baseline.neon
+vendor/bin/phpcs --report=\\Forrest79\\PhpCsIgnores\\BaselineReport -s src tests > phpcs-baseline.neon
 ```
 
 > You will probably need update path in generated list (there could be both absolute/relative paths depends on what are your sources and in what directory

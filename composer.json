@@ -12,13 +12,13 @@
 	],
 	"require": {
 		"nette/neon": "^3.3",
-		"php": ">=8.0",
-		"squizlabs/php_codesniffer": "3.*"
+		"php": "^8.0",
+		"squizlabs/php_codesniffer": "^3.7"
  	},
 	"require-dev": {
-		"forrest79/phpcs": "^0.7",
-		"phpstan/phpstan": "^1.9",
-		"phpstan/phpstan-strict-rules": "^1.4"
+		"forrest79/phpcs": "^1.0",
+		"phpstan/phpstan": "^1.10",
+		"phpstan/phpstan-strict-rules": "^1.5"
 	},
 	"autoload": {
 		"psr-4": {

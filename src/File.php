@@ -22,19 +22,12 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 	private int $ignoredFixableCount = 0;
 
 
-	public function __construct(
-		int $numFiles,
-		string $path,
-		PHP_CodeSniffer\Ruleset $ruleset,
-		PHP_CodeSniffer\Config $config,
-	)
+	public function __construct(string $path, PHP_CodeSniffer\Ruleset $ruleset, PHP_CodeSniffer\Config $config)
 	{
 		parent::__construct($path, $ruleset, $config);
 
 		$this->originalIgnoreErrors = Ignores::getInstance()->getRemainingIgnoreErrorsForFileAndClean($path);
 		$this->ignoreErrors = $this->originalIgnoreErrors;
-
-		OutdatedFiles::getInstance()?->setRealParallelCount($numFiles);
 	}
 
 

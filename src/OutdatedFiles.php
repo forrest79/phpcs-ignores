@@ -14,9 +14,7 @@ final class OutdatedFiles
 
 	private string $outdatedVirtualFile;
 
-	private int $originalParallelCount;
-
-	private int|NULL $realParallelCount = NULL;
+	private int $parentPID;
 
 	private string|NULL $outdatedDataFile = NULL;
 
@@ -25,21 +23,26 @@ final class OutdatedFiles
 	{
 		$this->ignores = $ignores;
 		$this->outdatedVirtualFile = $outdatedVirtualFile;
-		$this->originalParallelCount = (int) $config->parallel; // PHPStan fix bad annotation hack
 
 		$files = $config->files;
 		$files[] = $outdatedVirtualFile; // this must be last file to check - it's file that perform check what ignored files was not matched
 		$config->files = $files;
 
-		if ($this->originalParallelCount === 1) {
+		if ((int) $config->parallel === 1) { // @hack for PHPStan - fix bad annotation - parallel is int in real
 			$this->outdatedDataFile = NULL;
 		} else {
+			$parentPID = getmypid();
+			if ($parentPID === FALSE) {
+				throw new \RuntimeException('Can\'t get actual PID.');
+			}
+			$this->parentPID = $parentPID;
+
 			$outdatedDataFile = tempnam(sys_get_temp_dir(), 'phpcs-ignores-outdated');
 			if ($outdatedDataFile === FALSE) {
 				throw new \RuntimeException('Can\'t create phpcs-ignores-outdated temp file.');
 			}
 
-			file_put_contents($outdatedDataFile, json_encode(['completedCount' => 0, 'remainingIgnoreErrors' => []]));
+			file_put_contents($outdatedDataFile, json_encode(NULL));
 			$this->outdatedDataFile = $outdatedDataFile;
 		}
 	}
@@ -65,14 +68,13 @@ final class OutdatedFiles
 			}
 
 			$json = $this->loadOutdatedDataFile();
-			$json['completedCount']++;
 
 			// we know that one checked file is only in one process, so valid remaining ignore errors are these it's in all processes (array_intersect_key)
-			$json['remainingIgnoreErrors'] = $json['completedCount'] === 1
+			$remainingIgnoreErrors = $json === NULL
 				? $this->ignores->getRemainingIgnoreErrors() // for first process we need to fill array, so in next proceses we can make intersect (array_intersect_key)
-				: array_intersect_key($json['remainingIgnoreErrors'], $this->ignores->getRemainingIgnoreErrors());
+				: array_intersect_key($json, $this->ignores->getRemainingIgnoreErrors());
 
-			file_put_contents($this->outdatedDataFile, json_encode($json));
+			file_put_contents($this->outdatedDataFile, json_encode($remainingIgnoreErrors));
 
 			flock($handle, LOCK_UN);
 			fclose($handle);
@@ -95,14 +97,18 @@ final class OutdatedFiles
 
 		$remainingOutdatedErrors = $this->ignores->getRemainingIgnoreErrors();
 
-		if ($this->outdatedDataFile !== NULL) {
+		if ($this->outdatedDataFile !== NULL) { // only for parallel
 			// wait to complete all processes
 			$start = microtime(TRUE);
 			do {
 				try {
-					$json = $this->loadOutdatedDataFile();
-					if (($this->realParallelCount ?? $this->originalParallelCount) === ($json['completedCount'] + 1)) {
-						$remainingOutdatedErrors = array_intersect_key($json['remainingIgnoreErrors'], $remainingOutdatedErrors);
+					if (!$this->isSomeChildRunning()) {
+						$json = $this->loadOutdatedDataFile();
+						if ($json === NULL) {
+							throw new \RuntimeException('There should be some data in json file, but there is initial NULL.');
+						}
+
+						$remainingOutdatedErrors = array_intersect_key($json, $remainingOutdatedErrors);
 						break;
 					}
 				} catch (\JsonException) {
@@ -151,6 +157,31 @@ final class OutdatedFiles
 	}
 
 
+	private function isSomeChildRunning(): bool
+	{
+		exec(sprintf('ps --ppid %d | tail -n +2', $this->parentPID), $output, $exitCode);
+		if ($exitCode !== 0) {
+			throw new \RuntimeException('Could not determine child processes on your system.');
+		}
+
+		$processCount = 0;
+		foreach ($output as $pidLine) {
+			if (preg_match('#^(?<pid>[0-9]+)#', trim($pidLine), $matches) !== 1) {
+				throw new \RuntimeException(sprintf('Could not get child PID number from "%s" line.', $pidLine));
+			}
+
+			$pid = (int) $matches['pid'];
+			if ($pid === getmypid()) {
+				continue;
+			}
+
+			$processCount++;
+		}
+
+		return $processCount > 0;
+	}
+
+
 	private function getOutdatedDataFileLock(): string
 	{
 		if ($this->outdatedDataFile === NULL) {
@@ -162,9 +193,9 @@ final class OutdatedFiles
 
 
 	/**
-	 * @return array{completedCount: int, remainingIgnoreErrors: array<array<string, mixed>>}
+	 * @return array<array<string, mixed>>|NULL
 	 */
-	private function loadOutdatedDataFile(): array
+	private function loadOutdatedDataFile(): array|NULL
 	{
 		if ($this->outdatedDataFile === NULL) {
 			throw new \RuntimeException('Property outdatedDataFile should not be NULL.');
@@ -175,7 +206,7 @@ final class OutdatedFiles
 			throw new \RuntimeException('Can\'t load outdated data file.');
 		}
 
-		/** @phpstan-var array{completedCount: int, remainingIgnoreErrors: array<array<string, mixed>>} */
+		/** @phpstan-var array<array<string, mixed>>|NULL */
 		return json_decode($data, NULL, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
 	}
 
@@ -201,20 +232,6 @@ final class OutdatedFiles
 				$expectedCount,
 				$realCount === 1 ? '1 time' : ($realCount . ' times'),
 			);
-		}
-	}
-
-
-	public function setRealParallelCount(int $numFiles): void
-	{
-		if (($this->realParallelCount === NULL) && ($this->outdatedDataFile !== NULL)) {
-			$batch = ceil($numFiles / $this->originalParallelCount);
-			for ($i = 2; $i <= $this->originalParallelCount; $i++) {
-				if (($batch * $i) >= $numFiles) {
-					$this->realParallelCount = $i;
-					break;
-				}
-			}
 		}
 	}
 

@@ -28,7 +28,7 @@ final class OutdatedFiles
 		$files[] = $outdatedVirtualFile; // this must be last file to check - it's file that perform check what ignored files was not matched
 		$config->files = $files;
 
-		if ((int) $config->parallel === 1) { // @hack for PHPStan - fix bad annotation - parallel is int in real
+		if ($config->parallel === 1) {
 			$this->outdatedDataFile = NULL;
 		} else {
 			$parentPID = getmypid();

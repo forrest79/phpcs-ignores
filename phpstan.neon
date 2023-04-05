@@ -27,6 +27,11 @@ parameters:
 			count: 1
 			path: src/BaselineReport.php
 
+		- # Bad PHPCS annotation
+			message: "#^Strict comparison using === between bool and 1 will always evaluate to false\\.$#"
+			count: 1
+			path: src/OutdatedFiles.php
+
 		-
 			message: "#^Cannot access offset 0 on mixed\\.$#"
 			count: 1
@@ -166,6 +171,11 @@ parameters:
 			message: "#^Trying to invoke string but it might not be a callable\\.$#"
 			count: 1
 			path: src/PhpCsInjections.php
+
+		- # Bad PHPCS annotation
+			message: "#^Property PHP_CodeSniffer\\\\Config::\\$parallel \\(bool\\) does not accept int\\.$#"
+			count: 1
+			path: src/bootstrap-outdated.php
 
 		-
 			message: '#^Cannot access offset .+\.$#'

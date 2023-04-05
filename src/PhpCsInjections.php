@@ -10,6 +10,9 @@ final class PhpCsInjections
 	private const PROTOCOL = 'file';
 
 	/** @var resource|NULL */
+	public $context;
+
+	/** @var resource|NULL */
 	private $handle;
 
 	/** @var array<callable(string $path, string $code): string> */
@@ -66,7 +69,10 @@ final class PhpCsInjections
 
 	public function dir_opendir(string $path, int $options): bool
 	{
-		$this->handle = $this->native('opendir', $path);
+		$this->handle = $this->context !== NULL
+			? $this->native('opendir', $path, $this->context)
+			: $this->native('opendir', $path);
+
 		return (bool) $this->handle;
 	}
 
@@ -89,19 +95,26 @@ final class PhpCsInjections
 	public function mkdir(string $path, int $mode, int $options): bool
 	{
 		$recursive = (bool) ($options & STREAM_MKDIR_RECURSIVE);
-		return $this->native('mkdir', $path, $mode, $recursive);
+
+		return $this->context !== NULL
+			? $this->native('mkdir', $path, $mode, $recursive, $this->context)
+			: $this->native('mkdir', $path, $mode, $recursive);
 	}
 
 
 	public function rename(string $pathFrom, string $pathTo): bool
 	{
-		return $this->native('rename', $pathFrom, $pathTo);
+		return $this->context !== NULL
+			? $this->native('rename', $pathFrom, $pathTo, $this->context)
+			: $this->native('rename', $pathFrom, $pathTo);
 	}
 
 
 	public function rmdir(string $path, int $options): bool
 	{
-		return $this->native('rmdir', $path);
+		return $this->context !== NULL
+			? $this->native('rmdir', $path, $this->context)
+			: $this->native('rmdir', $path);
 	}
 
 
@@ -165,8 +178,8 @@ final class PhpCsInjections
 	public function stream_open(string $path, string $mode, int $options, string|NULL &$openedPath): bool
 	{
 		$usePath = (bool) ($options & STREAM_USE_PATH);
-		if ($mode === 'rb' && pathinfo($path, PATHINFO_EXTENSION) === 'php') {
-			$content = $this->native('file_get_contents', $path, $usePath);
+		if (($mode === 'rb') && (pathinfo($path, PATHINFO_EXTENSION) === 'php')) {
+			$content = $this->native('file_get_contents', $path, $usePath, $this->context);
 			if ($content === FALSE) {
 				return FALSE;
 			} else {
@@ -180,7 +193,9 @@ final class PhpCsInjections
 				return TRUE;
 			}
 		} else {
-			$this->handle = $this->native('fopen', $path, $mode, $usePath);
+			$this->handle = $this->context !== NULL
+				? $this->native('fopen', $path, $mode, $usePath, $this->context)
+				: $this->native('fopen', $path, $mode, $usePath);
 			return (bool) $this->handle;
 		}
 	}
@@ -229,7 +244,7 @@ final class PhpCsInjections
 
 
 	/**
-	 * @return int|false
+	 * @return int|FALSE
 	 */
 	public function stream_write(string $data)
 	{

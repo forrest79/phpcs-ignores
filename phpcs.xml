@@ -19,6 +19,10 @@
 		<exclude-pattern>src/PhpCsInjections.php</exclude-pattern>
 	</rule>
 
+	<rule ref="SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty">
+		<exclude-pattern>src/PhpCsInjections.php</exclude-pattern>
+	</rule>
+
 	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName.NoMatchBetweenTypeNameAndFileName">
 		<exclude-pattern>tests/run-tests.php</exclude-pattern>
 	</rule>
@@ -43,6 +47,10 @@
 	</rule>
 
 	<rule ref="Squiz.Classes.ClassFileName.NoMatch">
+		<exclude-pattern>tests/run-tests.php</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.PHP.Heredoc.NotAllowed">
 		<exclude-pattern>tests/run-tests.php</exclude-pattern>
 	</rule>
 

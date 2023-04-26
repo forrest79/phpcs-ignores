@@ -47,5 +47,5 @@ jobs:
       - name: Run phpstan
         run: composer phpstan
 
-      - name: Run testd
+      - name: Run tests
         run: composer tests

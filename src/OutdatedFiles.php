@@ -71,7 +71,7 @@ final class OutdatedFiles
 
 			// we know that one checked file is only in one process, so valid remaining ignore errors are these it's in all processes (array_intersect_key)
 			$remainingIgnoreErrors = $json === NULL
-				? $this->ignores->getRemainingIgnoreErrors() // for first process we need to fill array, so in next proceses we can make intersect (array_intersect_key)
+				? $this->ignores->getRemainingIgnoreErrors() // for first process we need to fill array, so in next processes we can make intersect (array_intersect_key)
 				: array_intersect_key($json, $this->ignores->getRemainingIgnoreErrors());
 
 			file_put_contents($this->outdatedDataFile, json_encode($remainingIgnoreErrors));

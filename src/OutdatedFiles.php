@@ -118,7 +118,13 @@ final class OutdatedFiles
 				usleep(50000); // 50ms
 
 				if ((microtime(TRUE) - $start) > self::WAIT_FOR_ALL_PROCESSES_SECONDS) {
-					throw new \RuntimeException(sprintf('Waiting time for complete all processes - %d seconds - exceeded.', self::WAIT_FOR_ALL_PROCESSES_SECONDS));
+					throw new \RuntimeException(sprintf(
+						"Waiting time for complete all processes (%d seconds) exceeded.\n\nDEBUG INFO - Parent PID: %d, Current child PID: %d\n\nRunning processes: %s",
+						self::WAIT_FOR_ALL_PROCESSES_SECONDS,
+						$this->parentPID,
+						getmypid(),
+						implode(PHP_EOL, $this->getRunningChildProcesses()),
+					));
 				}
 			} while (TRUE);
 		}
@@ -159,13 +165,8 @@ final class OutdatedFiles
 
 	private function isSomeChildRunning(): bool
 	{
-		exec(sprintf('ps --ppid %d | tail -n +2', $this->parentPID), $output, $exitCode);
-		if ($exitCode !== 0) {
-			throw new \RuntimeException('Could not determine child processes on your system.');
-		}
-
 		$processCount = 0;
-		foreach ($output as $pidLine) {
+		foreach ($this->getRunningChildProcesses() as $pidLine) {
 			if (preg_match('#^(?<pid>[0-9]+)#', trim($pidLine), $matches) !== 1) {
 				throw new \RuntimeException(sprintf('Could not get child PID number from "%s" line.', $pidLine));
 			}
@@ -179,6 +180,20 @@ final class OutdatedFiles
 		}
 
 		return $processCount > 0;
+	}
+
+
+	/**
+	 * @return list<string>
+	 */
+	private function getRunningChildProcesses(): array
+	{
+		exec(sprintf('ps --ppid %d | tail -n +2', $this->parentPID), $output, $exitCode);
+		if ($exitCode !== 0) {
+			throw new \RuntimeException('Could not determine child processes on your system.');
+		}
+
+		return $output;
 	}
 
 

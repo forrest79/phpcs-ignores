@@ -23,6 +23,11 @@ parameters:
 			path: src/File.php
 
 		-
+			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array given\\.$#"
+			count: 1
+			path: src/File.php
+
+		-
 			message: '#^Parameter \$phpcsFile of method Forrest79\\PhpCsIgnores\\BaselineReport\:\:generateFileReport\(\) has invalid type PHP_CodeSniffer\\File\.$#'
 			count: 1
 			path: src/BaselineReport.php

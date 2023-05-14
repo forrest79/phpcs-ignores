@@ -180,7 +180,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		}
 
 		if ($outdatedErrorCount > 0) {
-			$warnings[1][1] = $outdatedErrors; // 1/1 = line/col
+			$warnings[1][1] = array_merge($warnings[1][1] ?? [], $outdatedErrors); // 1/1 = line/col - there could already exist some error)
 		}
 
 		$this->setWarnings($warnings);

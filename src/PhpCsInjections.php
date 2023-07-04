@@ -145,6 +145,9 @@ final class PhpCsInjections
 	}
 
 
+	/**
+	 * @param int<0, 7> $operation
+	 */
 	public function stream_lock(int $operation): bool
 	{
 		return $operation > 0

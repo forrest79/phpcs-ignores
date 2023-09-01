@@ -69,7 +69,9 @@ Just use the correct paths. This should work with all other PHPCS settings like 
 By default, you will be noticed about all outdated ignores in processed files, so you can simply remove these definitions from the neon files. But if you want
 to be informed also about the whole files, that wasn't matched during analyses, you must use the second bootstrap `bootstrap-outdated.php` and you must be sure,
 you're running analysis on your whole repository. If you're using for example PHPCS only on changed files (via GIT), you can't use this detecting because you will
-get many false positive messages. 
+get many false positive messages.
+
+If you want to ignore warnings about outdated errors and files, you can use third bootstrap `bootstrap-hide-outdated-warnings.php`.  
 
 ### Known limitations
 

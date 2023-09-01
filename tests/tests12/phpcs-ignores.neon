@@ -4,9 +4,3 @@ ignoreErrors:
 		message: 'Method \Forrest79\PhpCsIgnores\Tests\File1::method1() does not have native type hint for its parameter $report but it should be possible to add it based on @param annotation "bool".'
 		count: 1
 		path: File1.php
-
-	-
-		sniff: SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon
-		message: There must be no whitespace between closing parenthesis and return type colon.
-		count: 1
-		path: File2.php

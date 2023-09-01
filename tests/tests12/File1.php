@@ -5,7 +5,11 @@ namespace Forrest79\PhpCsIgnores\Tests;
 final class File1
 {
 
-	public function method1(bool $report): bool
+	/**
+	 * @param bool $report
+	 * @return bool
+	 */
+	public function method1($report)
 	{
 		return !$report;
 	}

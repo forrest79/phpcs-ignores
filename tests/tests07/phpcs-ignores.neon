@@ -10,3 +10,9 @@ ignoreErrors:
 		message: There must be no whitespace between closing parenthesis and return type colon.
 		count: 1
 		path: File2.php
+
+	-
+		sniff: SlevomatCodingStandard.PHP.DisallowReference.DisallowedPassingByReference
+		message: Passing by reference is disallowed.
+		count: 1
+		path: File2.php

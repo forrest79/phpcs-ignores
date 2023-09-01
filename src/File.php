@@ -21,13 +21,18 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 
 	private int $ignoredFixableCount = 0;
 
+	private bool $shouldShowOutdatedWarnings;
+
 
 	public function __construct(string $path, PHP_CodeSniffer\Ruleset $ruleset, PHP_CodeSniffer\Config $config)
 	{
 		parent::__construct($path, $ruleset, $config);
 
-		$this->originalIgnoreErrors = Ignores::getInstance()->getRemainingIgnoreErrorsForFileAndClean($path);
+		$ignores = Ignores::getInstance();
+		$this->originalIgnoreErrors = $ignores->getRemainingIgnoreErrorsForFileAndClean($path);
 		$this->ignoreErrors = $this->originalIgnoreErrors;
+
+		$this->shouldShowOutdatedWarnings = $ignores->shouldShowOutdatedWarnings();
 	}
 
 
@@ -156,31 +161,34 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		$this->setIgnoredFixableCount($ignoredFixableCount);
 
 		$outdatedErrorCount = 0;
-		$outdatedErrors = [];
-		foreach ($this->ignoreErrors as $sniff => $messageCounts) {
-			foreach ($messageCounts as $message => $count) {
-				$expectedCount = $this->originalIgnoreErrors[$sniff][$message];
-				$realCount = $expectedCount - $count;
 
-				$outdatedErrors[] = [
-					'message' => OutdatedFiles::formatOutdatedMessage(
-						$realCount,
-						$expectedCount,
-						$sniff,
-						$message,
-					),
-					'source' => $sniff,
-					'listener' => '',
-					'severity' => 0,
-					'fixable' => FALSE,
-				];
+		if ($this->shouldShowOutdatedWarnings) {
+			$outdatedErrors = [];
+			foreach ($this->ignoreErrors as $sniff => $messageCounts) {
+				foreach ($messageCounts as $message => $count) {
+					$expectedCount = $this->originalIgnoreErrors[$sniff][$message];
+					$realCount = $expectedCount - $count;
 
-				$outdatedErrorCount++;
+					$outdatedErrors[] = [
+						'message' => OutdatedFiles::formatOutdatedMessage(
+							$realCount,
+							$expectedCount,
+							$sniff,
+							$message,
+						),
+						'source' => $sniff,
+						'listener' => '',
+						'severity' => 0,
+						'fixable' => FALSE,
+					];
+
+					$outdatedErrorCount++;
+				}
 			}
-		}
 
-		if ($outdatedErrorCount > 0) {
-			$warnings[1][1] = array_merge($warnings[1][1] ?? [], $outdatedErrors); // 1/1 = line/col - there could already exist some error)
+			if ($outdatedErrorCount > 0) {
+				$warnings[1][1] = array_merge($warnings[1][1] ?? [], $outdatedErrors); // 1/1 = line/col - there could already exist some error)
+			}
 		}
 
 		$this->setWarnings($warnings);

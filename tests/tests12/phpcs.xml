@@ -4,5 +4,6 @@
 
 	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName.NoMatchBetweenTypeNameAndFileName">
 		<exclude-pattern>File1.php</exclude-pattern>
+		<exclude-pattern>File2.php</exclude-pattern>
 	</rule>
 </ruleset>

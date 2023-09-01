@@ -184,5 +184,5 @@ parameters:
 
 		-
 			message: '#^Cannot access offset .+\.$#'
-			count: 52
+			count: 54
 			path: tests/run-tests.php

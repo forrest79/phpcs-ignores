@@ -7,9 +7,8 @@ final class File1
 
 	/**
 	 * @param bool $report
-	 * @return bool
 	 */
-	public function method1($report)
+	public function method1($report): bool
 	{
 		return !$report;
 	}

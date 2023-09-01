@@ -9,6 +9,7 @@ final class TestsRunner
 
 	private const BOOTSTRAP_PARAM = '--bootstrap=../src/bootstrap.php';
 	private const BOOTSTRAP_OUTDATED_PARAM = '--bootstrap=../src/bootstrap-outdated.php';
+	private const BOOTSTRAP_HIDE_OUTDATED_WARNINGS_PARAM = '--bootstrap=../src/bootstrap-hide-outdated-warnings.php';
 	private const PARALLEL_PARAM = '--parallel=2';
 	private const CACHE_PARAM = '--cache=temp/cache.json';
 
@@ -52,38 +53,43 @@ final class TestsRunner
 		);
 
 		$success = $success && $this->runTests(
-			'Test ignoring errors (no error, expecting one outdated error)',
+			'Test ignoring errors (expecting no error, one outdated error)',
 			fn (): bool => $this->tests5(),
 		);
 
 		$success = $success && $this->runTests(
-			'Test ignoring errors (expecting one error and expecting outdated error)',
+			'Test ignoring errors with hiding outdated warnings (expecting no error, one outdated warning and one outdated file should be ignored)',
 			fn (): bool => $this->tests6(),
 		);
 
 		$success = $success && $this->runTests(
-			'Test outdated files (expecting no outdated file)',
+			'Test ignoring errors (expecting one error and expecting outdated error)',
 			fn (): bool => $this->tests7(),
 		);
 
 		$success = $success && $this->runTests(
-			'Test outdated files (expecting one outdated file)',
+			'Test outdated files (expecting no outdated file)',
 			fn (): bool => $this->tests8(),
 		);
 
 		$success = $success && $this->runTests(
-			'Test fix errors (expecting no fixed error)',
+			'Test outdated files (expecting one outdated file)',
 			fn (): bool => $this->tests9(),
 		);
 
 		$success = $success && $this->runTests(
-			'Test fix errors (expecting one fixed error)',
+			'Test fix errors (expecting no fixed error)',
 			fn (): bool => $this->tests10(),
 		);
 
 		$success = $success && $this->runTests(
-			'Test generate baseline',
+			'Test fix errors (expecting one fixed error)',
 			fn (): bool => $this->tests11(),
+		);
+
+		$success = $success && $this->runTests(
+			'Test generate baseline',
+			fn (): bool => $this->tests12(),
 		);
 
 		return $success;
@@ -292,37 +298,15 @@ final class TestsRunner
 
 			echo sprintf('   - %s: ', $title);
 
-			$exec = $this->exec(self::PHPCS_BIN, 'tests06', self::BOOTSTRAP_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_FIXABLE_ERROR) {
+			$exec = $this->exec(self::PHPCS_BIN, 'tests06', self::BOOTSTRAP_HIDE_OUTDATED_WARNINGS_PARAM, $params);
+			if ($exec['exitCode'] !== self::EXIT_CODE_OK) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return FALSE;
 			}
 
 			$data = self::parseJson($exec['output']);
-			if (($data['totals']['errors'] !== 1) || $data['totals']['warnings'] !== 1) {
-				echo 'there should be no error and just one warning' . PHP_EOL;
-				return FALSE;
-			}
-
-			$file1 = __DIR__ . '/tests06/File1.php';
-			if ($data['files'][$file1]['errors'] !== 1) {
-				echo 'there is missing error for file ' . $file1 . PHP_EOL;
-				return FALSE;
-			}
-
-			if ($data['files'][$file1]['messages'][0]['source'] !== 'SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon') {
-				echo 'there is bad sniff for warning in file ' . $file1 . PHP_EOL;
-				return FALSE;
-			}
-
-			$file2 = __DIR__ . '/tests06/File2.php';
-			if ($data['files'][$file2]['warnings'] !== 1) {
-				echo 'there is missing warning for file ' . $file2 . PHP_EOL;
-				return FALSE;
-			}
-
-			if ($data['files'][$file2]['messages'][0]['message'] !== 'Ignored sniff \'SlevomatCodingStandard.PHP.DisallowReference.DisallowedPassingByReference\' with message \'Passing by reference is disallowed.\' was not matched in report.') {
-				echo 'there is bad message for warning in file ' . $file2 . PHP_EOL;
+			if (($data['totals']['errors'] !== 0) || $data['totals']['warnings'] !== 0) {
+				echo 'there should be no error and no warning' . PHP_EOL;
 				return FALSE;
 			}
 
@@ -344,15 +328,37 @@ final class TestsRunner
 
 			echo sprintf('   - %s: ', $title);
 
-			$exec = $this->exec(self::PHPCS_BIN, 'tests07', self::BOOTSTRAP_OUTDATED_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_OK) {
+			$exec = $this->exec(self::PHPCS_BIN, 'tests07', self::BOOTSTRAP_PARAM, $params);
+			if ($exec['exitCode'] !== self::EXIT_CODE_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return FALSE;
 			}
 
 			$data = self::parseJson($exec['output']);
-			if (($data['totals']['errors'] !== 0) || $data['totals']['warnings'] !== 0) {
-				echo 'there are some errors or warnings' . PHP_EOL;
+			if (($data['totals']['errors'] !== 1) || $data['totals']['warnings'] !== 1) {
+				echo 'there should be no error and just one warning' . PHP_EOL;
+				return FALSE;
+			}
+
+			$file1 = __DIR__ . '/tests07/File1.php';
+			if ($data['files'][$file1]['errors'] !== 1) {
+				echo 'there is missing error for file ' . $file1 . PHP_EOL;
+				return FALSE;
+			}
+
+			if ($data['files'][$file1]['messages'][0]['source'] !== 'SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon') {
+				echo 'there is bad sniff for warning in file ' . $file1 . PHP_EOL;
+				return FALSE;
+			}
+
+			$file2 = __DIR__ . '/tests07/File2.php';
+			if ($data['files'][$file2]['warnings'] !== 1) {
+				echo 'there is missing warning for file ' . $file2 . PHP_EOL;
+				return FALSE;
+			}
+
+			if ($data['files'][$file2]['messages'][0]['message'] !== 'Ignored sniff \'SlevomatCodingStandard.PHP.DisallowReference.DisallowedPassingByReference\' with message \'Passing by reference is disallowed.\' was not matched in report.') {
+				echo 'there is bad message for warning in file ' . $file2 . PHP_EOL;
 				return FALSE;
 			}
 
@@ -375,26 +381,14 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests08', self::BOOTSTRAP_OUTDATED_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_OK) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return FALSE;
 			}
 
 			$data = self::parseJson($exec['output']);
-			if (($data['totals']['errors'] !== 0) || $data['totals']['warnings'] !== 1) {
-				echo 'there should be no error and just one warning' . PHP_EOL;
-				return FALSE;
-			}
-
-			$outdatedFile = '/outdated/ignored-files';
-			if ($data['files'][$outdatedFile]['warnings'] !== 1) {
-				echo 'there is missing warning for outdated file' . PHP_EOL;
-				return FALSE;
-			}
-
-			$file3 = __DIR__ . '/tests08/File3.php';
-			if ($data['files'][$outdatedFile]['messages'][0]['message'] !== 'File: \n' . $file3 . '\n\nIgnored sniff \'SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon\' with message \'There must be no whitespace between closing parenthesis and return type colon.\' was not matched in report.') {
-				echo 'there is bad message for warning in outdated file' . PHP_EOL;
+			if (($data['totals']['errors'] !== 0) || $data['totals']['warnings'] !== 0) {
+				echo 'there are some errors or warnings' . PHP_EOL;
 				return FALSE;
 			}
 
@@ -416,14 +410,27 @@ final class TestsRunner
 
 			echo sprintf('   - %s: ', $title);
 
-			$exec = $this->exec(self::PHPCBF_BIN, 'tests09', self::BOOTSTRAP_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_OK) {
+			$exec = $this->exec(self::PHPCS_BIN, 'tests09', self::BOOTSTRAP_OUTDATED_PARAM, $params);
+			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return FALSE;
 			}
 
-			if (!str_contains($exec['output'], 'No fixable errors were found')) {
-				echo 'there is probably some errors to fix' . PHP_EOL;
+			$data = self::parseJson($exec['output']);
+			if (($data['totals']['errors'] !== 0) || $data['totals']['warnings'] !== 1) {
+				echo 'there should be no error and just one warning' . PHP_EOL;
+				return FALSE;
+			}
+
+			$outdatedFile = '/outdated/ignored-files';
+			if ($data['files'][$outdatedFile]['warnings'] !== 1) {
+				echo 'there is missing warning for outdated file' . PHP_EOL;
+				return FALSE;
+			}
+
+			$file3 = __DIR__ . '/tests09/File3.php';
+			if ($data['files'][$outdatedFile]['messages'][0]['message'] !== 'File: \n' . $file3 . '\n\nIgnored sniff \'SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon\' with message \'There must be no whitespace between closing parenthesis and return type colon.\' was not matched in report.') {
+				echo 'there is bad message for warning in outdated file' . PHP_EOL;
 				return FALSE;
 			}
 
@@ -446,13 +453,42 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCBF_BIN, 'tests10', self::BOOTSTRAP_PARAM, $params);
+			if ($exec['exitCode'] !== self::EXIT_CODE_OK) {
+				echo 'PHPCS exited unexpectedly' . PHP_EOL;
+				return FALSE;
+			}
+
+			if (!str_contains($exec['output'], 'No fixable errors were found')) {
+				echo 'there is probably some errors to fix' . PHP_EOL;
+				return FALSE;
+			}
+
+			echo 'OK' . PHP_EOL;
+
+			if ($cleanCache) {
+				self::cleanCache();
+			}
+		}
+
+		return TRUE;
+	}
+
+
+	private function tests11(): bool
+	{
+		foreach (self::DEFAULT_TEST_CASES as $test) {
+			[$title, $params, $cleanCache] = $test;
+
+			echo sprintf('   - %s: ', $title);
+
+			$exec = $this->exec(self::PHPCBF_BIN, 'tests11', self::BOOTSTRAP_PARAM, $params);
 			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return FALSE;
 			}
 
-			$file2 = __DIR__ . '/tests10/File2.php';
-			if (preg_match('#PHPCS-Ignores\/tests\/tests10\/File2.php[ ]+1      0#', $exec['output']) === 0) {
+			$file2 = __DIR__ . '/tests11/File2.php';
+			if (preg_match('#PHPCS-Ignores\/tests\/tests11\/File2.php[ ]+1      0#', $exec['output']) === 0) {
 				echo 'there is probably bad info about fixed and remaining errors in file ' . $file2 . PHP_EOL;
 				return FALSE;
 			}
@@ -480,14 +516,14 @@ final class TestsRunner
 	}
 
 
-	private function tests11(): bool
+	private function tests12(): bool
 	{
 		foreach (self::DEFAULT_TEST_CASES as $test) {
 			[$title, $params, $cleanCache] = $test;
 
 			echo sprintf('   - %s: ', $title);
 
-			$exec = $this->exec(self::PHPCS_BIN, 'tests11', self::BOOTSTRAP_PARAM, $params, '\\\\Forrest79\\\\PhpCsIgnores\\\\BaselineReport');
+			$exec = $this->exec(self::PHPCS_BIN, 'tests12', self::BOOTSTRAP_PARAM, $params, '\\\\Forrest79\\\\PhpCsIgnores\\\\BaselineReport');
 			if ($exec['exitCode'] !== self::EXIT_CODE_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return FALSE;
@@ -499,13 +535,13 @@ ignoreErrors:
 		sniff: SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		message: 'Method \Forrest79\PhpCsIgnores\Tests\File1::method1() does not have native return type hint for its return value but it should be possible to add it based on @return annotation "bool".'
 		count: 1
-		path: tests11/File1.php
+		path: tests12/File1.php
 
 	-
 		sniff: SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing.WhitespaceBeforeColon
 		message: There must be no whitespace between closing parenthesis and return type colon.
 		count: 2
-		path: tests11/File2.php
+		path: tests12/File2.php
 NEON;
 
 			if (trim($exec['output']) !== trim($expected)) {

@@ -15,6 +15,8 @@ final class Ignores
 	/** @var array<string, array<string, array<string, int>>> */
 	private array $ignoreErrors = [];
 
+	private bool $showOutdatedWarnings = TRUE;
+
 
 	public function __construct(PHP_CodeSniffer\Ruleset $ruleset)
 	{
@@ -101,6 +103,18 @@ final class Ignores
 			}
 		}
 		return implode(DIRECTORY_SEPARATOR, $absolutes);
+	}
+
+
+	public function shouldShowOutdatedWarnings(): bool
+	{
+		return $this->showOutdatedWarnings;
+	}
+
+
+	public function hideOutdatedWarnings(): void
+	{
+		$this->showOutdatedWarnings = FALSE;
 	}
 
 

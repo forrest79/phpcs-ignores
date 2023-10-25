@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/forrest79/phpcs-ignores/v)](//packagist.org/packages/forrest79/phpcs-ignores)
 [![Monthly Downloads](https://poser.pugx.org/forrest79/phpcs-ignores/d/monthly)](//packagist.org/packages/forrest79/phpcs-ignores)
 [![License](https://poser.pugx.org/forrest79/phpcs-ignores/license)](//packagist.org/packages/forrest79/phpcs-ignores)
-[![Build](https://github.com/forrest79/PHPCS-Ignores/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/forrest79/PHPCS-Ignores/actions/workflows/build.yml)
+[![Build](https://github.com/forrest79/phpcs-ignores/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/forrest79/phpcs-ignores/actions/workflows/build.yml)
 
 ## Introduction
 

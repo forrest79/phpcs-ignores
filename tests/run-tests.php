@@ -488,7 +488,7 @@ final class TestsRunner
 			}
 
 			$file2 = __DIR__ . '/tests11/File2.php';
-			if (preg_match('#PHPCS-Ignores\/tests\/tests11\/File2.php[ ]+1      0#', $exec['output']) === 0) {
+			if (preg_match('#\/tests\/tests11\/File2.php[ ]+1      0#', $exec['output']) === 0) {
 				echo 'there is probably bad info about fixed and remaining errors in file ' . $file2 . PHP_EOL;
 				return FALSE;
 			}

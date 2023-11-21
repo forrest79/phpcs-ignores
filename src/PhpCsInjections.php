@@ -22,7 +22,7 @@ final class PhpCsInjections
 	public static function register(): void
 	{
 		self::setInjections([static function (string $path, string $code): string {
-			if (str_ends_with($path, 'vendor/squizlabs/php_codesniffer/src/Files/FileList.php')) {
+			if (str_ends_with($path, 'vendor/phpcsstandards/php_codesniffer/src/Files/FileList.php') || str_ends_with($path, 'vendor/squizlabs/php_codesniffer/src/Files/FileList.php')) { // squizlabs - backwards compatibility with an abandon PHP_CodeSniffer version
 				// already patched (why?)
 				if (str_contains($code, File::class)) {
 					if (PHP_CODESNIFFER_VERBOSITY > 0) {

@@ -96,6 +96,9 @@ final class TestsRunner
 	}
 
 
+	/**
+	 * @param callable(): bool $tests
+	 */
 	private function runTests(string $title, callable $tests): bool
 	{
 		self::cleanCache();

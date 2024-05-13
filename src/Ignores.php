@@ -42,7 +42,7 @@ final class Ignores
 			$ignoreErrors = Neon::decode($configFileData);
 			if (is_array($ignoreErrors) && isset($ignoreErrors['ignoreErrors']) && is_array($ignoreErrors['ignoreErrors'])) {
 				foreach ($ignoreErrors['ignoreErrors'] as $ignoreError) {
-					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']));
+					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']) && is_string($ignoreError['count']));
 
 					$path = $ignoreError['path'];
 					if (!str_starts_with($path, '/')) {

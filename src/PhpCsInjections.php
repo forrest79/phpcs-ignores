@@ -31,8 +31,9 @@ final class PhpCsInjections
 					return $code;
 				}
 
-				// can't find where to put patch (new PHPCS version?)
 				$search = 'new LocalFile(';
+
+				// can't find where to put patch (new PHPCS version?)
 				if (!str_contains($code, $search)) {
 					if (PHP_CODESNIFFER_VERBOSITY > 0) {
 						echo sprintf('Can\'t find \'%s\' in file \'%s\'. Patch can\'t be applied', $search, $path) . PHP_EOL;

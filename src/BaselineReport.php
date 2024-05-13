@@ -38,7 +38,7 @@ final class BaselineReport implements Report
 			return FALSE;
 		}
 
-		assert(is_string($report['filename']));
+		assert(is_string($report['filename']) && is_array($report['messages']));
 
 		$filename = $report['filename'];
 
@@ -55,10 +55,11 @@ final class BaselineReport implements Report
 
 		$messages = '';
 		foreach ($report['messages'] as $lineErrors) {
+			assert(is_array($lineErrors));
 			foreach ($lineErrors as $colErrors) {
+				assert(is_array($colErrors));
 				foreach ($colErrors as $error) {
-					assert(is_string($error['message']));
-					assert(is_string($error['source']));
+					assert(is_array($error) && is_string($error['message']) && is_string($error['source']));
 
 					$message = str_replace("\n", '\n', $error['message']);
 					$message = str_replace("\r", '\r', $message);

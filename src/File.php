@@ -101,9 +101,13 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		if ($this->getErrorCount() !== 0) {
 			$errors = [];
 			foreach ($this->getErrors() as $line => $lineErrors) {
+				assert(is_array($lineErrors));
 				foreach ($lineErrors as $column => $colErrors) {
+					assert(is_array($colErrors));
+
 					$newErrors = [];
 					foreach ($colErrors as $data) {
+						assert(is_array($data) && is_string($data['source']) && is_string($data['message']) && is_bool($data['fixable']));
 						if ($this->isIgnored($data['source'], $data['message'])) {
 							$ignoredErrorCount++;
 							if ($data['fixable']) {
@@ -133,9 +137,13 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		$warnings = [];
 		if ($this->getWarningCount() !== 0) {
 			foreach ($this->getWarnings() as $line => $lineWarnings) {
+				assert(is_array($lineWarnings));
 				foreach ($lineWarnings as $column => $colWarnings) {
+					assert(is_array($colWarnings));
+
 					$newWarnings = [];
 					foreach ($colWarnings as $data) {
+						assert(is_array($data) && is_string($data['source']) && is_string($data['message']) && is_bool($data['fixable']));
 						if ($this->isIgnored($data['source'], $data['message'])) {
 							$ignoredWarningCount++;
 							if ($data['fixable']) {

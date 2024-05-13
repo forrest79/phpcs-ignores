@@ -8,12 +8,12 @@ parameters:
 		- %rootDir%/../../squizlabs/php_codesniffer/src
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$errors of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setErrors\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\<non\\-empty\\-array\\<int\\|string, non\\-empty\\-list\\<mixed\\>\\>\\> given\\.$#"
+			message: "#^Parameter \\#1 \\$errors of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setErrors\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\<non\\-empty\\-array\\<non\\-empty\\-list\\<non\\-empty\\-array\\>\\>\\> given\\.$#"
 			count: 1
 			path: src/File.php
 
 		-
-			message: "#^Parameter \\#1 \\$warnings of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setWarnings\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\<non\\-empty\\-array\\<int\\|string, list\\<mixed\\>\\>\\> given\\.$#"
+			message: "#^Parameter \\#1 \\$warnings of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setWarnings\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\<non\\-empty\\-array\\<list\\<array\\>\\>\\> given\\.$#"
 			count: 1
 			path: src/File.php
 
@@ -23,7 +23,7 @@ parameters:
 			path: src/File.php
 
 		-
-			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array given\\.$#"
+			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array\\<mixed\\> given\\.$#"
 			count: 1
 			path: src/File.php
 
@@ -138,7 +138,7 @@ parameters:
 			path: src/PhpCsInjections.php
 
 		-
-			message: "#^Parameter \\#2 \\$length of function fread expects int\\<0, max\\>, int given\\.$#"
+			message: "#^Parameter \\#2 \\$length of function fread expects int\\<1, max\\>, int given\\.$#"
 			count: 1
 			path: src/PhpCsInjections.php
 
@@ -150,11 +150,6 @@ parameters:
 		-
 			message: "#^Property Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:\\$handle \\(resource\\|null\\) does not accept mixed\\.$#"
 			count: 2
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Property Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:\\$handle \\(resource\\|null\\) does not accept resource\\|false\\.$#"
-			count: 1
 			path: src/PhpCsInjections.php
 
 		-

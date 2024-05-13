@@ -138,7 +138,7 @@ parameters:
 			path: src/PhpCsInjections.php
 
 		-
-			message: "#^Parameter \\#2 \\$length of function fread expects int\\<0, max\\>, int given\\.$#"
+			message: "#^Parameter \\#2 \\$length of function fread expects int\\<1, max\\>, int given\\.$#"
 			count: 1
 			path: src/PhpCsInjections.php
 
@@ -150,11 +150,6 @@ parameters:
 		-
 			message: "#^Property Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:\\$handle \\(resource\\|null\\) does not accept mixed\\.$#"
 			count: 2
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Property Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:\\$handle \\(resource\\|null\\) does not accept resource\\|false\\.$#"
-			count: 1
 			path: src/PhpCsInjections.php
 
 		-

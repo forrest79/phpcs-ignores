@@ -17,8 +17,8 @@
  	},
 	"require-dev": {
 		"forrest79/phpcs": "^1.1",
-		"phpstan/phpstan": "^1.10",
-		"phpstan/phpstan-strict-rules": "^1.5"
+		"phpstan/phpstan": "^1.11",
+		"phpstan/phpstan-strict-rules": "^1.6"
 	},
 	"autoload": {
 		"psr-4": {

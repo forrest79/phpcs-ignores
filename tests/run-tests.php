@@ -458,7 +458,7 @@ final class TestsRunner
 				return FALSE;
 			}
 
-			if (!str_contains($exec['output'], 'No fixable errors were found')) {
+			if (!str_contains($exec['output'], 'No violations were found')) {
 				echo 'there is probably some errors to fix' . PHP_EOL;
 				return FALSE;
 			}

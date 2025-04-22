@@ -6,10 +6,10 @@
 
 	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
 		<properties>
-			<property name="rootNamespaces" type="array" value="
-				src=>Forrest79\PhpCsIgnores,
-				tests=>Forrest79\PhpCsIgnores\Tests,
-			"/>
+			<property name="rootNamespaces" type="array">
+				<element key="src" value="Forrest79\PhpCsIgnores"/>
+				<element key="tests" value="Forrest79\PhpCsIgnores\Tests"/>
+			</property>
 		</properties>
 	</rule>
 

@@ -89,7 +89,7 @@ final class OutdatedFiles
 
 
 	/**
-	 * @return array<array<string, mixed>>
+	 * @return list<array<string, mixed>>
 	 */
 	public function checkOutdatedFiles(): array
 	{

@@ -107,6 +107,7 @@ final class BaselineReport implements Report
 
 					$sniff = $error['sniff'];
 					$message = $error['message'];
+					assert(is_string($message));
 					$ignoreErrors[$path][$sniff][$message] = ($ignoreErrors[$path][$sniff][$message] ?? 0) + 1;
 				}
 			}

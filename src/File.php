@@ -242,9 +242,9 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 	{
 		$this->path = '/outdated/ignored-files';
 
-		$outdatedFiles = $outdatedFiles->checkOutdatedFiles();
-		$this->setIgnoredWarningCount(-1 * count($outdatedFiles));
-		$this->setWarnings($outdatedFiles !== [] ? [1 => [1 => $outdatedFiles]] : []); // 1/1 = line/col
+		$checkedOutdatedFiles = $outdatedFiles->checkOutdatedFiles();
+		$this->setIgnoredWarningCount(-1 * count($checkedOutdatedFiles));
+		$this->setWarnings($checkedOutdatedFiles !== [] ? [1 => [1 => $checkedOutdatedFiles]] : []); // 1/1 = line/col
 	}
 
 

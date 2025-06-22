@@ -12,11 +12,11 @@
 	],
 	"require": {
 		"nette/neon": "^3.4",
-		"php": "^8.0",
-		"squizlabs/php_codesniffer": "^3.8"
+		"php": "^8.2",
+		"squizlabs/php_codesniffer": "^3.13"
  	},
 	"require-dev": {
-		"forrest79/phpcs": "^2.0",
+		"forrest79/phpcs": "^2.1",
 		"phpstan/phpstan": "^2.1",
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"shipmonk/phpstan-rules": "^4.1"

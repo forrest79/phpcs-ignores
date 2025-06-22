@@ -87,9 +87,10 @@ final class PhpCsInjections
 	}
 
 
-	public function dir_rewinddir(): bool
+	public function dir_rewinddir(): true
 	{
-		return (bool) rewinddir($this->handle);
+		rewinddir($this->handle);
+		return true;
 	}
 
 
@@ -220,7 +221,7 @@ final class PhpCsInjections
 	}
 
 
-	public function stream_set_option(int $option, int $arg1, int $arg2): bool
+	public function stream_set_option(int $option, int $arg1, int $arg2): false
 	{
 		return false;
 	}

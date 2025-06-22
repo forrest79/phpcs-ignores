@@ -222,12 +222,6 @@ parameters:
 			path: src/PhpCsInjections.php
 
 		-
-			message: '#^Result of function rewinddir \(void\) is used\.$#'
-			identifier: function.void
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
 			message: '#^Trying to invoke string but it might not be a callable\.$#'
 			identifier: callable.nonCallable
 			count: 1

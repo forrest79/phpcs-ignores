@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <ruleset name="PhPgSql">
-	<rule ref="./vendor/forrest79/phpcs/Forrest79CodingStandard/ruleset.xml"/>
+	<rule ref="./vendor/forrest79/phpcs/Forrest79CodingStandard/ruleset.xml">
+		<exclude name="SlevomatCodingStandard.TypeHints.ClassConstantTypeHint.MissingNativeTypeHint"/><!-- PHP 8.3+ -->
+	</rule>
 
 	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
 		<properties>
-			<property name="rootNamespaces" type="array" value="
-				src=>Forrest79\PhpCsIgnores,
-				tests=>Forrest79\PhpCsIgnores\Tests,
-			"/>
+			<property name="rootNamespaces" type="array">
+				<element key="src" value="Forrest79\PhpCsIgnores"/>
+				<element key="tests" value="Forrest79\PhpCsIgnores\Tests"/>
+			</property>
 		</properties>
 	</rule>
 

@@ -42,7 +42,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		$this->fixableIgnoreErrors = $this->originalIgnoreErrors;
 
 		$outdatedFiles = OutdatedFiles::getInstance();
-		if (($outdatedFiles !== NULL) && ($this->getFilename() === $outdatedFiles->getOutdatedVirtualFile())) {
+		if (($outdatedFiles !== null) && ($this->getFilename() === $outdatedFiles->getOutdatedVirtualFile())) {
 			$this->checkOutdatedFiles($outdatedFiles);
 		} else {
 			parent::process(); // This will provide full cache - we want it!
@@ -84,7 +84,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 			}
 
 			if ($this->isFixableIgnored($sniffCode, $message)) {
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -101,9 +101,13 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		if ($this->getErrorCount() !== 0) {
 			$errors = [];
 			foreach ($this->getErrors() as $line => $lineErrors) {
+				assert(is_array($lineErrors));
 				foreach ($lineErrors as $column => $colErrors) {
+					assert(is_array($colErrors));
+
 					$newErrors = [];
 					foreach ($colErrors as $data) {
+						assert(is_array($data) && is_string($data['source']) && is_string($data['message']) && is_bool($data['fixable']));
 						if ($this->isIgnored($data['source'], $data['message'])) {
 							$ignoredErrorCount++;
 							if ($data['fixable']) {
@@ -133,9 +137,13 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 		$warnings = [];
 		if ($this->getWarningCount() !== 0) {
 			foreach ($this->getWarnings() as $line => $lineWarnings) {
+				assert(is_array($lineWarnings));
 				foreach ($lineWarnings as $column => $colWarnings) {
+					assert(is_array($colWarnings));
+
 					$newWarnings = [];
 					foreach ($colWarnings as $data) {
+						assert(is_array($data) && is_string($data['source']) && is_string($data['message']) && is_bool($data['fixable']));
 						if ($this->isIgnored($data['source'], $data['message'])) {
 							$ignoredWarningCount++;
 							if ($data['fixable']) {
@@ -179,7 +187,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 						'source' => $sniff,
 						'listener' => '',
 						'severity' => 0,
-						'fixable' => FALSE,
+						'fixable' => false,
 					];
 
 					$outdatedErrorCount++;
@@ -208,10 +216,10 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 				unset($this->ignoreErrors[$sniff]);
 			}
 
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 
@@ -223,10 +231,10 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 				unset($this->fixableIgnoreErrors[$sniff][$message]);
 			}
 
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 
@@ -234,9 +242,9 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 	{
 		$this->path = '/outdated/ignored-files';
 
-		$outdatedFiles = $outdatedFiles->checkOutdatedFiles();
-		$this->setIgnoredWarningCount(-1 * count($outdatedFiles));
-		$this->setWarnings($outdatedFiles !== [] ? [1 => [1 => $outdatedFiles]] : []); // 1/1 = line/col
+		$checkedOutdatedFiles = $outdatedFiles->checkOutdatedFiles();
+		$this->setIgnoredWarningCount(-1 * count($checkedOutdatedFiles));
+		$this->setWarnings($checkedOutdatedFiles !== [] ? [1 => [1 => $checkedOutdatedFiles]] : []); // 1/1 = line/col
 	}
 
 

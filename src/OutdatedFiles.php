@@ -6,7 +6,7 @@ use PHP_CodeSniffer;
 
 final class OutdatedFiles
 {
-	private static self|NULL $instance = NULL;
+	private static self|null $instance = null;
 
 	private const WAIT_FOR_ALL_PROCESSES_SECONDS = 30;
 
@@ -16,7 +16,7 @@ final class OutdatedFiles
 
 	private int $parentPID;
 
-	private string|NULL $outdatedDataFile = NULL;
+	private string|null $outdatedDataFile = null;
 
 
 	public function __construct(Ignores $ignores, PHP_CodeSniffer\Config $config, string $outdatedVirtualFile)
@@ -29,20 +29,20 @@ final class OutdatedFiles
 		$config->files = $files;
 
 		if ($config->parallel === 1) {
-			$this->outdatedDataFile = NULL;
+			$this->outdatedDataFile = null;
 		} else {
 			$parentPID = getmypid();
-			if ($parentPID === FALSE) {
+			if ($parentPID === false) {
 				throw new \RuntimeException('Can\'t get actual PID.');
 			}
 			$this->parentPID = $parentPID;
 
 			$outdatedDataFile = tempnam(sys_get_temp_dir(), 'phpcs-ignores-outdated');
-			if ($outdatedDataFile === FALSE) {
+			if ($outdatedDataFile === false) {
 				throw new \RuntimeException('Can\'t create phpcs-ignores-outdated temp file.');
 			}
 
-			file_put_contents($outdatedDataFile, json_encode(NULL));
+			file_put_contents($outdatedDataFile, json_encode(null));
 			$this->outdatedDataFile = $outdatedDataFile;
 		}
 	}
@@ -50,7 +50,7 @@ final class OutdatedFiles
 
 	public function __destruct()
 	{
-		if ($this->outdatedDataFile !== NULL) {
+		if ($this->outdatedDataFile !== null) {
 			if (!file_exists($this->outdatedDataFile)) {
 				// detecting outdated is probably done (destruct of last process)
 				return;
@@ -59,7 +59,7 @@ final class OutdatedFiles
 			$lockFile = $this->getOutdatedDataFileLock();
 
 			$handle = fopen($lockFile, 'c+');
-			if ($handle === FALSE) {
+			if ($handle === false) {
 				throw new \RuntimeException(sprintf('Unable to create an exclusive lock on file \'%s\'.', $lockFile));
 			}
 
@@ -70,7 +70,7 @@ final class OutdatedFiles
 			$json = $this->loadOutdatedDataFile();
 
 			// we know that one checked file is only in one process, so valid remaining ignore errors are these it's in all processes (array_intersect_key)
-			$remainingIgnoreErrors = $json === NULL
+			$remainingIgnoreErrors = $json === null
 				? $this->ignores->getRemainingIgnoreErrors() // for first process we need to fill array, so in next processes we can make intersect (array_intersect_key)
 				: array_intersect_key($json, $this->ignores->getRemainingIgnoreErrors());
 
@@ -89,7 +89,7 @@ final class OutdatedFiles
 
 
 	/**
-	 * @return array<array<string, mixed>>
+	 * @return list<array<string, mixed>>
 	 */
 	public function checkOutdatedFiles(): array
 	{
@@ -97,15 +97,15 @@ final class OutdatedFiles
 
 		$remainingOutdatedErrors = $this->ignores->getRemainingIgnoreErrors();
 
-		if ($this->outdatedDataFile !== NULL) { // only for parallel
+		if ($this->outdatedDataFile !== null) { // only for parallel
 			// wait to complete all processes
-			$start = microtime(TRUE);
+			$start = microtime(true);
 			do {
 				try {
 					if (!$this->isSomeChildRunning()) {
 						$json = $this->loadOutdatedDataFile();
-						if ($json === NULL) {
-							throw new \RuntimeException('There should be some data in json file, but there is initial NULL.');
+						if ($json === null) {
+							throw new \RuntimeException('There should be some data in json file, but there is initial null.');
 						}
 
 						$remainingOutdatedErrors = array_intersect_key($json, $remainingOutdatedErrors);
@@ -117,7 +117,7 @@ final class OutdatedFiles
 
 				usleep(50000); // 50ms
 
-				if ((microtime(TRUE) - $start) > (self::WAIT_FOR_ALL_PROCESSES_SECONDS * 1000)) {
+				if ((microtime(true) - $start) > (self::WAIT_FOR_ALL_PROCESSES_SECONDS * 1000)) {
 					throw new \RuntimeException(sprintf(
 						"Waiting time for complete all processes (%d seconds) exceeded.\n\nDEBUG INFO - Parent PID: %d, Current child PID: %d\n\nRunning processes: %s",
 						self::WAIT_FOR_ALL_PROCESSES_SECONDS,
@@ -126,7 +126,7 @@ final class OutdatedFiles
 						implode(PHP_EOL, $this->getRunningChildProcesses()),
 					));
 				}
-			} while (TRUE);
+			} while (true);
 		}
 
 		foreach ($remainingOutdatedErrors as $path => $sniffs) {
@@ -147,16 +147,16 @@ final class OutdatedFiles
 						'source' => $sniff,
 						'listener' => '',
 						'severity' => 0,
-						'fixable' => FALSE,
+						'fixable' => false,
 					];
 				}
 			}
 		}
 
-		if ($this->outdatedDataFile !== NULL) {
+		if ($this->outdatedDataFile !== null) {
 			@unlink($this->outdatedDataFile); // intentionally @ - file may not exists
 			@unlink($this->getOutdatedDataFileLock()); // intentionally @ - file may not exists
-			$this->outdatedDataFile = NULL;
+			$this->outdatedDataFile = null;
 		}
 
 		return $outdatedFiles;
@@ -199,8 +199,8 @@ final class OutdatedFiles
 
 	private function getOutdatedDataFileLock(): string
 	{
-		if ($this->outdatedDataFile === NULL) {
-			throw new \RuntimeException('Property outdatedDataFile should not be NULL.');
+		if ($this->outdatedDataFile === null) {
+			throw new \RuntimeException('Property outdatedDataFile should not be null.');
 		}
 
 		return $this->outdatedDataFile . '.lock';
@@ -208,21 +208,21 @@ final class OutdatedFiles
 
 
 	/**
-	 * @return array<array<string, mixed>>|NULL
+	 * @return array<array<string, mixed>>|null
 	 */
-	private function loadOutdatedDataFile(): array|NULL
+	private function loadOutdatedDataFile(): array|null
 	{
-		if ($this->outdatedDataFile === NULL) {
-			throw new \RuntimeException('Property outdatedDataFile should not be NULL.');
+		if ($this->outdatedDataFile === null) {
+			throw new \RuntimeException('Property outdatedDataFile should not be null.');
 		}
 
 		$data = file_get_contents($this->outdatedDataFile);
-		if ($data === FALSE) {
+		if ($data === false) {
 			throw new \RuntimeException('Can\'t load outdated data file.');
 		}
 
-		/** @phpstan-var array<array<string, mixed>>|NULL */
-		return json_decode($data, NULL, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+		/** @phpstan-var array<array<string, mixed>>|null */
+		return json_decode($data, null, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
 	}
 
 
@@ -253,7 +253,7 @@ final class OutdatedFiles
 
 	public function setInstance(): static
 	{
-		if (self::$instance !== NULL) {
+		if (self::$instance !== null) {
 			throw new \RuntimeException('Instance can be set just once.');
 		}
 
@@ -263,7 +263,7 @@ final class OutdatedFiles
 	}
 
 
-	public static function getInstance(): self|NULL
+	public static function getInstance(): self|null
 	{
 		return self::$instance;
 	}

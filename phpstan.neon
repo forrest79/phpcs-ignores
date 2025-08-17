@@ -1,173 +1,234 @@
 includes:
 	- %rootDir%/conf/bleedingEdge.neon
 	- %rootDir%/../phpstan-strict-rules/rules.neon
+	- %rootDir%/../../shipmonk/phpstan-rules/rules.neon
 
 parameters:
 	level: max
 	scanDirectories:
 		- %rootDir%/../../squizlabs/php_codesniffer/src
 	ignoreErrors:
-		-
-			message: "#^Parameter \\#1 \\$errors of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setErrors\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\<non\\-empty\\-array\\<int\\|string, non\\-empty\\-list\\<mixed\\>\\>\\> given\\.$#"
-			count: 1
-			path: src/File.php
-
-		-
-			message: "#^Parameter \\#1 \\$warnings of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setWarnings\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\<non\\-empty\\-array\\<int\\|string, list\\<mixed\\>\\>\\> given\\.$#"
-			count: 1
-			path: src/File.php
-
-		-
-			message: "#^Parameter \\#1 \\$warnings of method Forrest79\\\\PhpCsIgnores\\\\File\\:\\:setWarnings\\(\\) expects array\\<int, array\\<int, list\\<array\\<string, mixed\\>\\>\\>\\>, array\\{\\}\\|array\\{1\\: array\\{1\\: non\\-empty\\-array\\<array\\<string, mixed\\>\\>\\}\\} given\\.$#"
-			count: 1
-			path: src/File.php
-
-		-
-			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array given\\.$#"
-			count: 1
-			path: src/File.php
-
-		-
-			message: "#^Cannot access offset 0 on mixed\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Cannot access offset 1 on mixed\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Constant PHP_CODESNIFFER_VERBOSITY not found\\.$#"
-			count: 2
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Method Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:mkdir\\(\\) should return bool but returns mixed\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Method Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:rename\\(\\) should return bool but returns mixed\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Method Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:rmdir\\(\\) should return bool but returns mixed\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Method Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:stream_metadata\\(\\) should return bool but returns mixed\\.$#"
-			count: 4
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Method Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:stream_tell\\(\\) should return int but returns int\\|false\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Method Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:unlink\\(\\) should return bool but returns mixed\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, int\\<0, 1\\> given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, int\\<0, 2\\> given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function fclose expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function feof expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function fflush expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function flock expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function fread expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function fseek expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function fstat expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function ftell expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function ftruncate expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#1 \\$stream of function fwrite expects resource, resource\\|null given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#2 \\$code of callable callable\\(string, string\\)\\: string expects string, mixed given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#2 \\$length of function fread expects int\\<0, max\\>, int given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Parameter \\#2 \\$size of function ftruncate expects int\\<0, max\\>, int given\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Property Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:\\$handle \\(resource\\|null\\) does not accept mixed\\.$#"
-			count: 2
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Property Forrest79\\\\PhpCsIgnores\\\\PhpCsInjections\\:\\:\\$handle \\(resource\\|null\\) does not accept resource\\|false\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Result of function rewinddir \\(void\\) is used\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
-
-		-
-			message: "#^Trying to invoke string but it might not be a callable\\.$#"
-			count: 1
-			path: src/PhpCsInjections.php
+		# Common for tests
 
 		-
 			message: '#^Cannot access offset .+\.$#'
 			count: 54
 			path: tests/run-tests.php
+
+		# Baseline
+
+		-
+			message: '#^Parameter \#1 \$errors of method Forrest79\\PhpCsIgnores\\File\:\:setErrors\(\) expects array\<int, array\<int, list\<array\<string, mixed\>\>\>\>, array\<non\-empty\-array\<non\-empty\-list\<non\-empty\-array\>\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/File.php
+
+		-
+			message: '#^Parameter \#1 \$warnings of method Forrest79\\PhpCsIgnores\\File\:\:setWarnings\(\) expects array\<int, array\<int, list\<array\<string, mixed\>\>\>\>, array\<non\-empty\-array\<list\<non\-empty\-array\>\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/File.php
+
+		-
+			message: '#^Parameter \#2 \$values of function vsprintf expects array\<bool\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/File.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Cannot access offset 1 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Comparison mixed \> int contains non\-comparable type, only int\|float\|string\|DateTimeInterface or comparable tuple is allowed\.$#'
+			identifier: shipmonk.comparingNonComparableTypes
+			count: 2
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Constant PHP_CODESNIFFER_VERBOSITY not found\.$#'
+			identifier: constant.notFound
+			count: 2
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Method Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:mkdir\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Method Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:rename\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Method Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:rmdir\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Method Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:stream_metadata\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 4
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Method Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:stream_tell\(\) should return int but returns int\|(false|bool)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Method Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:unlink\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Missing native return typehint array\|(false|bool)$#'
+			identifier: shipmonk.missingNativeReturnTypehint
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Missing native return typehint int\|(false|bool)$#'
+			identifier: shipmonk.missingNativeReturnTypehint
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Missing native return typehint mixed$#'
+			identifier: shipmonk.missingNativeReturnTypehint
+			count: 2
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Missing native return typehint string\|(false|bool)#'
+			identifier: shipmonk.missingNativeReturnTypehint
+			count: 2
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, int\<0, 1\> given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Only booleans are allowed in a ternary operator condition, int\<0, 2\> given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function feof expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fflush expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function flock expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fread expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fseek expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fstat expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function ftell expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function ftruncate expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fwrite expects resource, resource\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#2 \$code of callable callable\(string, string\)\: string expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#2 \$length of function fread expects int\<1, max\>, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Parameter \#2 \$size of function ftruncate expects int\<0, max\>, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Property Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:\$handle \(resource\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Public property `context` not marked as readonly\.$#'
+			identifier: shipmonk.publicPropertyNotReadonly
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Result of function rewinddir \(void\) is used\.$#'
+			identifier: function.void
+			count: 1
+			path: src/PhpCsInjections.php
+
+		-
+			message: '#^Trying to invoke string but it might not be a callable\.$#'
+			identifier: callable.nonCallable
+			count: 1
+			path: src/PhpCsInjections.php

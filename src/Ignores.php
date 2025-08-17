@@ -7,7 +7,7 @@ use PHP_CodeSniffer;
 
 final class Ignores
 {
-	private static self|NULL $instance = NULL;
+	private static self|null $instance = null;
 
 	/** @var list<string> */
 	private array $configFiles = [];
@@ -15,7 +15,7 @@ final class Ignores
 	/** @var array<string, array<string, array<string, int>>> */
 	private array $ignoreErrors = [];
 
-	private bool $showOutdatedWarnings = TRUE;
+	private bool $showOutdatedWarnings = true;
 
 
 	public function __construct(PHP_CodeSniffer\Ruleset $ruleset)
@@ -25,7 +25,7 @@ final class Ignores
 		foreach (array_merge([getcwd() . '/.phpcs.xml', getcwd() . '/phpcs.xml'], $rulesetPaths) as $path) {
 			$filter = dirname($path) . '/' . basename($path, '.xml') . '*.neon';
 			$configFiles = glob($filter);
-			if ($configFiles === FALSE) {
+			if ($configFiles === false) {
 				throw new \RuntimeException(sprintf('Can\'t load config files with filter \'%s\'.', $filter));
 			}
 
@@ -35,14 +35,14 @@ final class Ignores
 		foreach ($this->configFiles as $configFile) {
 			$configFileDir = dirname($configFile);
 			$configFileData = @file_get_contents($configFile); // intentionally @ - file may not exists
-			if ($configFileData === FALSE) {
+			if ($configFileData === false) {
 				throw new \RuntimeException(sprintf('Can\'t load config file \'%s\'.', $configFile));
 			}
 
 			$ignoreErrors = Neon::decode($configFileData);
 			if (is_array($ignoreErrors) && isset($ignoreErrors['ignoreErrors']) && is_array($ignoreErrors['ignoreErrors'])) {
 				foreach ($ignoreErrors['ignoreErrors'] as $ignoreError) {
-					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']));
+					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']) && is_string($ignoreError['count']));
 
 					$path = $ignoreError['path'];
 					if (!str_starts_with($path, '/')) {
@@ -114,13 +114,13 @@ final class Ignores
 
 	public function hideOutdatedWarnings(): void
 	{
-		$this->showOutdatedWarnings = FALSE;
+		$this->showOutdatedWarnings = false;
 	}
 
 
 	public function setInstance(): static
 	{
-		if (self::$instance !== NULL) {
+		if (self::$instance !== null) {
 			throw new \RuntimeException('Instance can be set just once.');
 		}
 
@@ -132,7 +132,7 @@ final class Ignores
 
 	public static function getInstance(): self
 	{
-		if (self::$instance === NULL) {
+		if (self::$instance === null) {
 			throw new \RuntimeException('Instance is not set.');
 		}
 

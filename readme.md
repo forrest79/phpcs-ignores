@@ -108,14 +108,14 @@ this object is instanced and via `PhpCsInjections.php` I'm updating this file - 
 
 This is the main magic. Injections work only for files that aren't yet loaded via PHP, so I want to enable it as soon as possible. For this I'm using
 bootstrap files. PHPCS includes this directly into main `PHP_CodeSniffer\Runner` at the beginning of the life cycle. This will register injections, load neon settings
-and set `config->recordErrors = TRUE` - we need always enabled `recordErrors` (it could be disabled via settings, and it's disabled by fixer), without this, error messages
+and set `config->recordErrors = true` - we need always enabled `recordErrors` (it could be disabled via settings, and it's disabled by fixer), without this, error messages
 are not generated and we can't check if there are ignored.
 
 The last thing is to check errors in processed file, set ignored messages and add info about outdated once. For PHPCS this is done after `process()` method is done. This is
 because we want the cache to be fully write and this is done in the original `process()` method. So we check existing errors, remove ignored once, update counts and check what
 errors are outdated and add these as warnings.
 
-For PHPCBF we need to check error right in the `addMessage()` method, because for ignored errors we need instantly return `FALSE` to not fix this ignores error.
+For PHPCBF we need to check error right in the `addMessage()` method, because for ignored errors we need instantly return `false` to not fix this ignores error.
 Fixing is run in a many loops and in the every loop we need to ignore the same errors so after each proccess are ignored error for fixer reset.   
 
 Checking outdated files is done by `OutdatedFiles` object, that is activated via `bootstrap-outdated.php`. There is nothing special to write about,

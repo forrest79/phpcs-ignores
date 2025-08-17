@@ -9,10 +9,10 @@ final class PhpCsInjections
 {
 	private const PROTOCOL = 'file';
 
-	/** @var resource|NULL */
+	/** @var resource|null */
 	public $context;
 
-	/** @var resource|NULL */
+	/** @var resource|null */
 	private $handle;
 
 	/** @var array<callable(string $path, string $code): string> */
@@ -31,8 +31,9 @@ final class PhpCsInjections
 					return $code;
 				}
 
-				// can't find where to put patch (new PHPCS version?)
 				$search = 'new LocalFile(';
+
+				// can't find where to put patch (new PHPCS version?)
 				if (!str_contains($code, $search)) {
 					if (PHP_CODESNIFFER_VERBOSITY > 0) {
 						echo sprintf('Can\'t find \'%s\' in file \'%s\'. Patch can\'t be applied', $search, $path) . PHP_EOL;
@@ -69,7 +70,7 @@ final class PhpCsInjections
 
 	public function dir_opendir(string $path, int $options): bool
 	{
-		$this->handle = $this->context !== NULL
+		$this->handle = $this->context !== null
 			? $this->native('opendir', $path, $this->context)
 			: $this->native('opendir', $path);
 
@@ -78,7 +79,7 @@ final class PhpCsInjections
 
 
 	/**
-	 * @return string|FALSE
+	 * @return string|false
 	 */
 	public function dir_readdir()
 	{
@@ -96,7 +97,7 @@ final class PhpCsInjections
 	{
 		$recursive = (bool) ($options & STREAM_MKDIR_RECURSIVE);
 
-		return $this->context !== NULL
+		return $this->context !== null
 			? $this->native('mkdir', $path, $mode, $recursive, $this->context)
 			: $this->native('mkdir', $path, $mode, $recursive);
 	}
@@ -104,7 +105,7 @@ final class PhpCsInjections
 
 	public function rename(string $pathFrom, string $pathTo): bool
 	{
-		return $this->context !== NULL
+		return $this->context !== null
 			? $this->native('rename', $pathFrom, $pathTo, $this->context)
 			: $this->native('rename', $pathFrom, $pathTo);
 	}
@@ -112,14 +113,14 @@ final class PhpCsInjections
 
 	public function rmdir(string $path, int $options): bool
 	{
-		return $this->context !== NULL
+		return $this->context !== null
 			? $this->native('rmdir', $path, $this->context)
 			: $this->native('rmdir', $path);
 	}
 
 
 	/**
-	 * @return resource|NULL
+	 * @return resource|null
 	 */
 	public function stream_cast(int $castAs)
 	{
@@ -152,7 +153,7 @@ final class PhpCsInjections
 	{
 		return $operation > 0
 			? flock($this->handle, $operation)
-			: TRUE;
+			: true;
 	}
 
 
@@ -174,17 +175,17 @@ final class PhpCsInjections
 				return $this->native('chmod', $path, $value);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 
-	public function stream_open(string $path, string $mode, int $options, string|NULL &$openedPath): bool
+	public function stream_open(string $path, string $mode, int $options, string|null &$openedPath): bool
 	{
 		$usePath = (bool) ($options & STREAM_USE_PATH);
 		if (($mode === 'rb') && (pathinfo($path, PATHINFO_EXTENSION) === 'php')) {
 			$content = $this->native('file_get_contents', $path, $usePath, $this->context);
-			if ($content === FALSE) {
-				return FALSE;
+			if ($content === false) {
+				return false;
 			} else {
 				foreach (self::$injections as $injection) {
 					$content = $injection($path, $content);
@@ -193,10 +194,10 @@ final class PhpCsInjections
 				$this->handle = tmpfile();
 				$this->native('fwrite', $this->handle, $content);
 				$this->native('fseek', $this->handle, 0);
-				return TRUE;
+				return true;
 			}
 		} else {
-			$this->handle = $this->context !== NULL
+			$this->handle = $this->context !== null
 				? $this->native('fopen', $path, $mode, $usePath, $this->context)
 				: $this->native('fopen', $path, $mode, $usePath);
 			return (bool) $this->handle;
@@ -205,7 +206,7 @@ final class PhpCsInjections
 
 
 	/**
-	 * @return string|FALSE
+	 * @return string|false
 	 */
 	public function stream_read(int $count)
 	{
@@ -221,12 +222,12 @@ final class PhpCsInjections
 
 	public function stream_set_option(int $option, int $arg1, int $arg2): bool
 	{
-		return FALSE;
+		return false;
 	}
 
 
 	/**
-	 * @return array<mixed>|FALSE
+	 * @return array<mixed>|false
 	 */
 	public function stream_stat()
 	{
@@ -247,7 +248,7 @@ final class PhpCsInjections
 
 
 	/**
-	 * @return int|FALSE
+	 * @return int|false
 	 */
 	public function stream_write(string $data)
 	{

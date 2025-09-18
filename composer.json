@@ -13,7 +13,7 @@
 	"require": {
 		"nette/neon": "^3.4",
 		"php": "^8.2",
-		"squizlabs/php_codesniffer": "^3.13"
+		"squizlabs/php_codesniffer": "^4.0"
  	},
 	"require-dev": {
 		"forrest79/phpcs": "^2.1",
@@ -32,7 +32,7 @@
 		}
 	},
 	"scripts": {
-		"phpcs": "vendor/bin/phpcs -s src tests/run-tests.php",
+		"phpcs": "vendor/bin/phpcs -q -s src tests/run-tests.php",
 		"phpstan": "vendor/bin/phpstan analyse src tests/run-tests.php",
 		"tests": "php tests/run-tests.php"
 	},

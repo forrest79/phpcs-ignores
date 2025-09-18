@@ -19,7 +19,9 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 
 	private int $ignoredWarningCount = 0;
 
-	private int $ignoredFixableCount = 0;
+	private int $ignoredFixableErrorCount = 0;
+
+	private int $ignoredFixableWarningCount = 0;
 
 	private bool $shouldShowOutdatedWarnings;
 
@@ -52,16 +54,18 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 
 
 	/**
-	 * @param bool $error
-	 * @param string $message
-	 * @param int $line
-	 * @param int $column
-	 * @param string $code
 	 * @param array<mixed> $data
-	 * @param int $severity
-	 * @param bool $fixable
 	 */
-	protected function addMessage($error, $message, $line, $column, $code, $data, $severity, $fixable): bool
+	protected function addMessage(
+		bool $error,
+		string $message,
+		int $line,
+		int $column,
+		string $code,
+		array $data,
+		int $severity,
+		bool $fixable,
+	): bool
 	{
 		// This condition is for PHPCBF - when error is ignored and fixable, we want to ignore it immediately.
 		// For PHPCS we want to process all errors in a classic way - because than we have complete cache a that we want.
@@ -96,7 +100,8 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 	{
 		$ignoredErrorCount = 0;
 		$ignoredWarningCount = 0;
-		$ignoredFixableCount = 0;
+		$ignoredFixableErrorCount = 0;
+		$ignoredFixableWarningCount = 0;
 
 		if ($this->getErrorCount() !== 0) {
 			$errors = [];
@@ -111,7 +116,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 						if ($this->isIgnored($data['source'], $data['message'])) {
 							$ignoredErrorCount++;
 							if ($data['fixable']) {
-								$ignoredFixableCount++;
+								$ignoredFixableErrorCount++;
 							}
 							continue;
 						}
@@ -147,7 +152,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 						if ($this->isIgnored($data['source'], $data['message'])) {
 							$ignoredWarningCount++;
 							if ($data['fixable']) {
-								$ignoredFixableCount++;
+								$ignoredFixableWarningCount++;
 							}
 							continue;
 						}
@@ -166,7 +171,7 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 			}
 		}
 
-		$this->setIgnoredFixableCount($ignoredFixableCount);
+		$this->setIgnoredFixableCount($ignoredFixableErrorCount, $ignoredFixableWarningCount);
 
 		$outdatedErrorCount = 0;
 
@@ -290,15 +295,28 @@ final class File extends PHP_CodeSniffer\Files\LocalFile
 	}
 
 
-	private function setIgnoredFixableCount(int $count): void
+	private function setIgnoredFixableCount(int $errorCount, int $warningCount): void
 	{
-		$this->ignoredFixableCount = $count;
+		$this->ignoredFixableErrorCount = $errorCount;
+		$this->ignoredFixableWarningCount = $warningCount;
 	}
 
 
 	public function getFixableCount(): int
 	{
-		return parent::getFixableCount() - $this->ignoredFixableCount;
+		return parent::getFixableCount() - $this->ignoredFixableErrorCount - $this->ignoredFixableWarningCount;
+	}
+
+
+	public function getFixableErrorCount(): int
+	{
+		return parent::getFixableErrorCount() - $this->ignoredFixableErrorCount;
+	}
+
+
+	public function getFixableWarningCount(): int
+	{
+		return parent::getFixableWarningCount() - $this->ignoredFixableWarningCount;
 	}
 
 }

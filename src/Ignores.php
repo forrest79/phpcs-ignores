@@ -42,7 +42,7 @@ final class Ignores
 			$ignoreErrors = Neon::decode($configFileData);
 			if (is_array($ignoreErrors) && isset($ignoreErrors['ignoreErrors']) && is_array($ignoreErrors['ignoreErrors'])) {
 				foreach ($ignoreErrors['ignoreErrors'] as $ignoreError) {
-					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']) && is_string($ignoreError['count']));
+					assert(is_array($ignoreError) && is_string($ignoreError['path']) && is_string($ignoreError['sniff']) && is_string($ignoreError['message']) && is_int($ignoreError['count']));
 
 					$path = $ignoreError['path'];
 					if (!str_starts_with($path, '/')) {
@@ -53,7 +53,7 @@ final class Ignores
 
 					$message = $ignoreError['message'];
 
-					$this->ignoreErrors[$path][$sniff][$message] = (int) $ignoreError['count'];
+					$this->ignoreErrors[$path][$sniff][$message] = $ignoreError['count'];
 
 					if ($this->ignoreErrors[$path][$sniff][$message] <= 0) {
 						throw new \RuntimeException(sprintf('Count for file \'%s\', sniff \'%s\' and message \'%s\' must be greater than 0.', $path, $sniff, $message));

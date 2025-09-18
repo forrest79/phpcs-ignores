@@ -13,9 +13,10 @@ final class TestsRunner
 	private const PARALLEL_PARAM = '--parallel=2';
 	private const CACHE_PARAM = '--cache=temp/cache.json';
 
-	private const EXIT_CODE_OK = 0;
-	private const EXIT_CODE_ERROR = 1;
-	private const EXIT_CODE_FIXABLE_ERROR = 2;
+	private const EXIT_CODE_OK = 0; // or all fixable errors were fixed and there is no error
+	private const EXIT_CODE_AUTO_FIXABLE_ERROR = 1;
+	private const EXIT_CODE_NON_AUTO_FIXABLE_ERROR = 2;
+	private const EXIT_CODE_AUTO_AND_NON_AUTO_FIXABLE_ERROR = 3;
 
 	/**
 	 * [$title, $parameters, $cleanCache]
@@ -149,7 +150,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests02', null, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_NON_AUTO_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -220,7 +221,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests04', self::BOOTSTRAP_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_FIXABLE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_AUTO_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -261,7 +262,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests05', self::BOOTSTRAP_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_NON_AUTO_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -332,7 +333,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests07', self::BOOTSTRAP_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_FIXABLE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_AUTO_AND_NON_AUTO_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -414,7 +415,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests09', self::BOOTSTRAP_OUTDATED_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_NON_AUTO_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -453,6 +454,8 @@ final class TestsRunner
 		foreach (self::DEFAULT_TEST_CASES as $test) {
 			[$title, $params, $cleanCache] = $test;
 
+			$params[] = '2>&1'; // we want an error output
+
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCBF_BIN, 'tests10', self::BOOTSTRAP_PARAM, $params);
@@ -485,7 +488,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCBF_BIN, 'tests11', self::BOOTSTRAP_PARAM, $params);
-			if ($exec['exitCode'] !== self::EXIT_CODE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_OK) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -527,7 +530,7 @@ final class TestsRunner
 			echo sprintf('   - %s: ', $title);
 
 			$exec = $this->exec(self::PHPCS_BIN, 'tests12', self::BOOTSTRAP_PARAM, $params, '\\\\Forrest79\\\\PhpCsIgnores\\\\BaselineReport');
-			if ($exec['exitCode'] !== self::EXIT_CODE_FIXABLE_ERROR) {
+			if ($exec['exitCode'] !== self::EXIT_CODE_AUTO_FIXABLE_ERROR) {
 				echo 'PHPCS exited unexpectedly' . PHP_EOL;
 				return false;
 			}
@@ -581,7 +584,7 @@ NEON;
 			$parameters[] = $boostrap;
 		}
 
-		$command = sprintf('%s --standard=%s/phpcs.xml --report=%s %s -s %s', $bin, $dir, $report, implode(' ', $parameters), $dir);
+		$command = sprintf('%s --standard=%s/phpcs.xml --report=%s %s -q -s %s', $bin, $dir, $report, implode(' ', $parameters), $dir);
 
 		if (exec($command, $output, $exitCode) === false) {
 			throw new \RuntimeException('Can\'t run PHPCS.');

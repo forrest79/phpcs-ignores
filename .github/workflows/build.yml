@@ -47,5 +47,8 @@ jobs:
       - name: Run phpstan
         run: composer phpstan
 
+      - name: Enable zend.assertions for tests # we need to do this in the whole system to enabled it also for PHPCS itself
+        run: echo "zend.assertions = 1" >> /etc/php/${{ matrix.php-versions }}/cli/php.ini
+
       - name: Run tests
         run: composer tests

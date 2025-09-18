@@ -33,6 +33,10 @@ final class TestsRunner
 
 	public function run(): bool
 	{
+		if (ini_get('zend.assertions') !== '1') {
+			throw new \RuntimeException('zend.assertions must be enabled in the system (zend.assertions = 1)');
+		}
+
 		$success = $this->runTests(
 			'Test correct phpcs.xml (no ignores, expecting no errors)',
 			fn (): bool => $this->tests1(),

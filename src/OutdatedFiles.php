@@ -117,12 +117,15 @@ final class OutdatedFiles
 
 				usleep(50000); // 50ms
 
+				$pid = getmypid();
+				assert($pid !== false);
+
 				if ((microtime(true) - $start) > (self::WAIT_FOR_ALL_PROCESSES_SECONDS * 1000)) {
 					throw new \RuntimeException(sprintf(
 						"Waiting time for complete all processes (%d seconds) exceeded.\n\nDEBUG INFO - Parent PID: %d, Current child PID: %d\n\nRunning processes: %s",
 						self::WAIT_FOR_ALL_PROCESSES_SECONDS,
 						$this->parentPID,
-						getmypid(),
+						$pid,
 						implode(PHP_EOL, $this->getRunningChildProcesses()),
 					));
 				}

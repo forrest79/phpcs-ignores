@@ -12,7 +12,7 @@
 	],
 	"require": {
 		"nette/neon": "^3.4",
-		"php": "^8.2",
+		"php": "^8.3",
 		"squizlabs/php_codesniffer": "^4.0"
  	},
 	"require-dev": {

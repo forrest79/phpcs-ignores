@@ -7,7 +7,7 @@ namespace Forrest79\PhpCsIgnores;
  */
 final class PhpCsInjections
 {
-	private const PROTOCOL = 'file';
+	private const string PROTOCOL = 'file';
 
 	/** @var resource|null */
 	public $context;

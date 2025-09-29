@@ -8,7 +8,7 @@ final class OutdatedFiles
 {
 	private static self|null $instance = null;
 
-	private const WAIT_FOR_ALL_PROCESSES_SECONDS = 30;
+	private const int WAIT_FOR_ALL_PROCESSES_SECONDS = 30;
 
 	private Ignores $ignores;
 

@@ -11,15 +11,15 @@
 		}
 	],
 	"require": {
-		"nette/neon": "^3.4",
+		"nette/neon": "^3.4 || ^4.0",
 		"php": "^8.3",
 		"squizlabs/php_codesniffer": "^4.0"
  	},
 	"require-dev": {
-		"forrest79/phpcs": "^2.3",
-		"phpstan/phpstan": "^2.1",
-		"phpstan/phpstan-strict-rules": "^2.0",
-		"shipmonk/phpstan-rules": "^4.1"
+		"forrest79/phpcs": "^2.5",
+		"phpstan/phpstan": "^2.3",
+		"phpstan/phpstan-strict-rules": "^2.1",
+		"shipmonk/phpstan-rules": "^4.4"
 	},
 	"autoload": {
 		"psr-4": {

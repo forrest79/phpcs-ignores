@@ -18,13 +18,13 @@ parameters:
 		# Baseline
 
 		-
-			message: '#^Parameter \#1 \$errors of method Forrest79\\PhpCsIgnores\\File\:\:setErrors\(\) expects array\<int, array\<int, list\<array\<string, mixed\>\>\>\>, array\<non\-empty\-array\<non\-empty\-list\<non\-empty\-array\>\>\> given\.$#'
+			rawMessage: 'Parameter #1 $errors of method Forrest79\PhpCsIgnores\File::setErrors() expects array<int, array<int, list<array<string, mixed>>>>, array<non-empty-array<non-empty-list<non-empty-array<mixed>>>> given.'
 			identifier: argument.type
 			count: 1
 			path: src/File.php
 
 		-
-			message: '#^Parameter \#1 \$warnings of method Forrest79\\PhpCsIgnores\\File\:\:setWarnings\(\) expects array\<int, array\<int, list\<array\<string, mixed\>\>\>\>, array\<non\-empty\-array\<list\<non\-empty\-array\>\>\> given\.$#'
+			rawMessage: 'Parameter #1 $warnings of method Forrest79\PhpCsIgnores\File::setWarnings() expects array<int, array<int, list<array<string, mixed>>>>, array<non-empty-array<list<non-empty-array<mixed>>>> given.'
 			identifier: argument.type
 			count: 1
 			path: src/File.php
@@ -213,12 +213,6 @@ parameters:
 			message: '#^Property Forrest79\\PhpCsIgnores\\PhpCsInjections\:\:\$handle \(resource\|null\) does not accept mixed\.$#'
 			identifier: assign.propertyType
 			count: 2
-			path: src/PhpCsInjections.php
-
-		-
-			message: '#^Public property `context` not marked as readonly\.$#'
-			identifier: shipmonk.publicPropertyNotReadonly
-			count: 1
 			path: src/PhpCsInjections.php
 
 		-

@@ -103,7 +103,7 @@ final class BaselineReport implements Report
 			foreach ($data['files'] as $path => $errors) {
 				assert(is_array($errors));
 				foreach ($errors as $error) {
-					assert(is_array($error) && is_string($error['sniff']) && $error['message']);
+					assert(is_array($error) && is_string($error['sniff']));
 
 					$sniff = $error['sniff'];
 					$message = $error['message'];

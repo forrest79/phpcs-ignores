@@ -19,7 +19,7 @@
 		"forrest79/phpcs": "^2.3",
 		"phpstan/phpstan": "^2.1",
 		"phpstan/phpstan-strict-rules": "^2.0",
-		"shipmonk/phpstan-rules": "^4.1"
+		"shipmonk/phpstan-rules": "^4.3"
 	},
 	"autoload": {
 		"psr-4": {
